@@ -1,0 +1,110 @@
+'use client';
+import { useState, useEffect } from 'react';
+import { Wifi, Bell, Settings, ChevronDown } from 'lucide-react';
+import { ASSETS } from '@/lib/assets';
+
+const TICKER_ITEMS = Object.values(ASSETS).map(a => ({
+  name: a.name,
+  price: a.price,
+  delta: a.delta,
+  color: a.color,
+}));
+
+export default function Topbar() {
+  const [time, setTime] = useState('');
+  const [offset, setOffset] = useState(0);
+
+  useEffect(() => {
+    const tick = () => setTime(new Date().toUTCString().slice(17, 25) + ' UTC');
+    tick();
+    const id = setInterval(tick, 1000);
+    return () => clearInterval(id);
+  }, []);
+
+  useEffect(() => {
+    const id = setInterval(() => setOffset(o => o - 1), 30);
+    return () => clearInterval(id);
+  }, []);
+
+  const formatPrice = (price: number) =>
+    price > 1000 ? `$${price.toLocaleString()}` : price > 10 ? `$${price.toFixed(2)}` : `$${price.toFixed(2)}`;
+
+  return (
+    <header style={{
+      background: 'var(--bg-secondary)',
+      borderBottom: '1px solid var(--border)',
+      position: 'sticky', top: 0, zIndex: 50,
+    }}>
+      {/* Main bar */}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 20px', height: '52px' }}>
+        {/* Logo */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <div style={{
+            width: 32, height: 32, borderRadius: 6,
+            background: 'var(--gold)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+          }}>
+            <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
+              <polygon points="10,2 18,7 18,13 10,18 2,13 2,7" fill="none" stroke="#090B0E" strokeWidth="1.5" />
+              <polygon points="10,6 14,8.5 14,11.5 10,14 6,11.5 6,8.5" fill="#090B0E" opacity="0.8" />
+            </svg>
+          </div>
+          <div>
+            <div style={{ fontFamily: 'var(--font-mono)', fontSize: 15, fontWeight: 600, color: 'var(--gold)', letterSpacing: '0.12em' }}>AURION</div>
+            <div style={{ fontSize: 10, color: 'var(--text-muted)', letterSpacing: '0.06em' }}>PRODUCTION-BACKED TRADING</div>
+          </div>
+        </div>
+
+        {/* Nav */}
+        <nav style={{ display: 'flex', gap: 4 }}>
+          {['Terminal', 'Portfolio', 'Onramp', 'Markets'].map((item, i) => (
+            <button key={item} style={{
+              padding: '5px 14px',
+              background: i === 0 ? 'rgba(201,168,76,0.12)' : 'transparent',
+              border: i === 0 ? '1px solid var(--border-bright)' : '1px solid transparent',
+              borderRadius: 4,
+              color: i === 0 ? 'var(--gold)' : 'var(--text-secondary)',
+              fontFamily: 'var(--font-mono)',
+              fontSize: 12,
+              cursor: 'pointer',
+              letterSpacing: '0.04em',
+            }}>
+              {item}
+            </button>
+          ))}
+        </nav>
+
+        {/* Right */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+            <div className="animate-pulse-gold" style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--green)' }} />
+            <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--text-secondary)' }}>{time}</span>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '4px 10px', background: 'var(--bg-tertiary)', border: '1px solid var(--border)', borderRadius: 4 }}>
+            <div style={{ width: 20, height: 20, borderRadius: '50%', background: 'var(--gold-dim)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10, color: 'var(--gold)' }}>T</div>
+            <span style={{ fontSize: 12, color: 'var(--text-secondary)' }}>Dr. Moodley</span>
+            <ChevronDown size={12} color="var(--text-muted)" />
+          </div>
+          <Bell size={16} color="var(--text-secondary)" style={{ cursor: 'pointer' }} />
+          <Settings size={16} color="var(--text-secondary)" style={{ cursor: 'pointer' }} />
+        </div>
+      </div>
+
+      {/* Ticker strip */}
+      <div style={{ overflow: 'hidden', borderTop: '1px solid var(--border)', height: 28, background: 'var(--bg-primary)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', height: '100%', transform: `translateX(${offset % 600}px)`, whiteSpace: 'nowrap' }}>
+          {[...TICKER_ITEMS, ...TICKER_ITEMS].map((item, i) => (
+            <span key={i} style={{ display: 'inline-flex', alignItems: 'center', gap: 6, marginRight: 32, fontFamily: 'var(--font-mono)', fontSize: 11 }}>
+              <span style={{ color: item.color }}>{item.name.toUpperCase()}</span>
+              <span style={{ color: 'var(--text-primary)' }}>{formatPrice(item.price)}</span>
+              <span style={{ color: item.delta >= 0 ? 'var(--green)' : 'var(--red)' }}>
+                {item.delta >= 0 ? '+' : ''}{item.delta.toFixed(2)}%
+              </span>
+              <span style={{ color: 'var(--text-muted)', marginRight: 8 }}>|</span>
+            </span>
+          ))}
+        </div>
+      </div>
+    </header>
+  );
+}
