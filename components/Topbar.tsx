@@ -122,14 +122,14 @@ export default function Topbar() {
 
         {/* Nav */}
         <nav style={{ display: 'flex', gap: 4 }}>
-          {['Terminal', 'Portfolio', 'Onramp', 'Markets'].map((item, i) => (
-            <button key={item} onClick={() => router.push('/terminal')} style={{
+          {[['Terminal', '/terminal'], ['Portfolio', '/portfolio'], ['Onramp', '/onramp'], ['Markets', '/markets']].map(([item, path], i) => (
+            <button key={item} onClick={() => router.push(path)} style={{
               padding: '5px 14px',
               background: i === 0 ? 'rgba(201,168,76,0.12)' : 'transparent',
               border: i === 0 ? '1px solid var(--border-bright)' : '1px solid transparent',
               borderRadius: 4, color: i === 0 ? 'var(--gold)' : 'var(--text-secondary)',
               fontFamily: 'var(--font-mono)', fontSize: 12, cursor: 'pointer', letterSpacing: '0.04em',
-            }}>{item}</button>
+            }}>{item as string}</button>
           ))}
         </nav>
 
