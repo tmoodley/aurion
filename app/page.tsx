@@ -1,100 +1,80 @@
 'use client';
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { useAuth } from '@/lib/auth';
-import AuthLayout from '@/components/AuthLayout';
-import FormField from '@/components/FormField';
+import Topbar from '@/components/Topbar';
+import AssetSidebar from '@/components/AssetSidebar';
+import AssetStats from '@/components/AssetStats';
+import PriceChart from '@/components/PriceChart';
+import AISignalPanel from '@/components/AISignalPanel';
+import TradePanel from '@/components/TradePanel';
+import PortfolioPanel from '@/components/PortfolioPanel';
+import OnrampPanel from '@/components/OnrampPanel';
+import WalletPanel from '@/components/WalletPanel';
+import { ASSETS, AssetKey } from '@/lib/assets';
 
-export default function LoginPage() {
-  const { login } = useAuth();
-  const router = useRouter();
+type RightTab = 'trade' | 'portfolio' | 'onramp' | 'wallet';
 
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+export default function Home() {
+  const [selectedAsset, setSelectedAsset] = useState<AssetKey>('BTC');
+  const [rightTab, setRightTab] = useState<RightTab>('trade');
+  const asset = ASSETS[selectedAsset];
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!email || !password) { setError('Please enter your email and password.'); return; }
-    setLoading(true);
-    setError('');
-    const ok = await login(email, password);
-    setLoading(false);
-    if (ok) router.push('/terminal');
-    else setError('Invalid credentials. Try any email + password for this demo.');
-  };
+  const rightTabs: { key: RightTab; label: string }[] = [
+    { key: 'trade', label: 'Trade' },
+    { key: 'portfolio', label: 'Portfolio' },
+    { key: 'onramp', label: 'Onramp' },
+    { key: 'wallet', label: 'Wallet' },
+  ];
 
   return (
-    <AuthLayout
-      title="Welcome back"
-      subtitle="Sign in to your AURION trading account"
-    >
-      <form onSubmit={handleSubmit}>
-        <FormField
-          label="Email"
-          type="email"
-          placeholder="you@example.com"
-          value={email}
-          onChange={e => setEmail(e.target.value)}
-          autoComplete="email"
-        />
-        <FormField
-          label="Password"
-          type="password"
-          placeholder="••••••••"
-          value={password}
-          onChange={e => setPassword(e.target.value)}
-          autoComplete="current-password"
-        />
-
-        {error && (
-          <div style={{ padding: '8px 12px', background: 'rgba(224,82,82,0.1)', border: '1px solid rgba(224,82,82,0.3)', borderRadius: 5, fontSize: 12, color: 'var(--red)', marginBottom: 14 }}>
-            {error}
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', overflow: 'hidden' }}>
+      <Topbar />
+      <div style={{ display: 'flex', flex: 1, overflow: 'hidden' }}>
+        <AssetSidebar selected={selectedAsset} onSelect={setSelectedAsset} />
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+          <AssetStats asset={asset} />
+          <div style={{ display: 'flex', flex: 1, overflow: 'hidden' }}>
+            <div style={{ flex: 1, overflowY: 'auto', padding: '16px' }}>
+              <PriceChart asset={asset} />
+              <AISignalPanel asset={asset} />
+              <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 8, padding: 16 }}>
+                <div style={{ fontFamily: 'var(--font-mono)', fontSize: 10, color: 'var(--text-muted)', letterSpacing: '0.08em', marginBottom: 12 }}>RECENT ACTIVITY</div>
+                {[
+                  { type: 'BUY', asset: 'BTC', amount: '$500', receive: '0.00531 BTC', time: '14:32:18', color: 'var(--green)' },
+                  { type: 'ONRAMP', asset: 'M-Pesa -> AGD', amount: 'KES 5,200', receive: '38.4 AGD', time: '11:15:42', color: 'var(--gold)' },
+                  { type: 'BUY', asset: 'NDX', amount: '$200', receive: '46.7 NDX', time: '09:04:11', color: 'var(--green)' },
+                  { type: 'SELL', asset: 'COOP', amount: '2 coins', receive: '$122.80', time: 'Yesterday', color: 'var(--red)' },
+                ].map((tx, i) => (
+                  <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '7px 0', borderBottom: i < 3 ? '1px solid var(--border)' : 'none' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                      <span style={{ fontFamily: 'var(--font-mono)', fontSize: 10, padding: '2px 6px', background: tx.color + '22', border: '1px solid ' + tx.color + '44', borderRadius: 3, color: tx.color }}>{tx.type}</span>
+                      <span style={{ fontSize: 12, color: 'var(--text-secondary)' }}>{tx.asset}</span>
+                    </div>
+                    <div style={{ textAlign: 'right' }}>
+                      <div style={{ fontFamily: 'var(--font-mono)', fontSize: 12, color: 'var(--text-primary)' }}>{tx.amount}</div>
+                      <div style={{ fontSize: 10, color: 'var(--text-muted)' }}>{tx.receive} · {tx.time}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div style={{ width: 280, borderLeft: '1px solid var(--border)', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+              <div style={{ display: 'flex', borderBottom: '1px solid var(--border)', background: 'var(--bg-secondary)' }}>
+                {rightTabs.map(t => (
+                  <button key={t.key} onClick={() => setRightTab(t.key)} style={{ flex: 1, padding: '9px 4px', background: 'transparent', border: 'none', borderBottom: rightTab === t.key ? '2px solid var(--gold)' : '2px solid transparent', color: rightTab === t.key ? 'var(--gold)' : 'var(--text-muted)', fontFamily: 'var(--font-mono)', fontSize: 10, cursor: 'pointer', letterSpacing: '0.05em' }}>
+                    {t.label.toUpperCase()}
+                  </button>
+                ))}
+              </div>
+              <div style={{ flex: 1, overflowY: 'auto', padding: 12 }}>
+                {rightTab === 'trade' && <TradePanel asset={asset} />}
+                {rightTab === 'portfolio' && <PortfolioPanel />}
+                {rightTab === 'onramp' && <OnrampPanel />}
+                {rightTab === 'wallet' && <WalletPanel />}
+              </div>
+            </div>
           </div>
-        )}
-
-        <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 16 }}>
-          <span style={{ fontSize: 12, color: 'var(--gold)', cursor: 'pointer' }}>Forgot password?</span>
         </div>
-
-        <button
-          type="submit"
-          disabled={loading}
-          style={{
-            width: '100%',
-            padding: '11px',
-            background: loading ? 'var(--bg-tertiary)' : 'var(--gold)',
-            border: 'none',
-            borderRadius: 5,
-            color: loading ? 'var(--text-muted)' : '#090B0E',
-            fontFamily: 'var(--font-mono)',
-            fontSize: 13,
-            fontWeight: 600,
-            cursor: loading ? 'not-allowed' : 'pointer',
-            letterSpacing: '0.08em',
-            transition: 'all 0.15s',
-            marginBottom: 16,
-          }}
-        >
-          {loading ? 'AUTHENTICATING...' : 'SIGN IN'}
-        </button>
-
-        {/* Demo hint */}
-        <div style={{ padding: '8px 12px', background: 'rgba(201,168,76,0.06)', border: '1px solid var(--border)', borderRadius: 5, fontSize: 11, color: 'var(--text-muted)', marginBottom: 16, fontFamily: 'var(--font-mono)' }}>
-          Demo: enter any email + password to sign in
-        </div>
-
-        <div style={{ borderTop: '1px solid var(--border)', paddingTop: 16, textAlign: 'center' }}>
-          <span style={{ fontSize: 13, color: 'var(--text-secondary)' }}>No account? </span>
-          <span
-            onClick={() => router.push('/register')}
-            style={{ fontSize: 13, color: 'var(--gold)', cursor: 'pointer', fontWeight: 500 }}
-          >
-            Create one
-          </span>
-        </div>
-      </form>
-    </AuthLayout>
+      </div>
+    </div>
   );
 }
