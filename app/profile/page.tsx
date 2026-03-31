@@ -24,7 +24,7 @@ export default function ProfilePage() {
     return (
       <div style={{ minHeight: '100vh', background: 'var(--bg-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: 16 }}>
         <div style={{ fontFamily: 'var(--font-mono)', fontSize: 14, color: 'var(--text-secondary)' }}>Not signed in</div>
-        <button onClick={() => router.push('/login')} style={{ padding: '9px 20px', background: 'var(--gold)', border: 'none', borderRadius: 5, color: '#090B0E', fontFamily: 'var(--font-mono)', fontSize: 12, cursor: 'pointer', letterSpacing: '0.06em' }}>
+        <button onClick={() => router.push('/')} style={{ padding: '9px 20px', background: 'var(--gold)', border: 'none', borderRadius: 5, color: '#090B0E', fontFamily: 'var(--font-mono)', fontSize: 12, cursor: 'pointer', letterSpacing: '0.06em' }}>
           SIGN IN
         </button>
       </div>
@@ -339,7 +339,7 @@ export default function ProfilePage() {
         {/* Sign out */}
         <div style={{ marginTop: 20, display: 'flex', justifyContent: 'flex-end' }}>
           <button
-            onClick={() => { logout(); router.push('/login'); }}
+            onClick={() => { logout(); router.push('/'); }}
             style={{
               display: 'flex', alignItems: 'center', gap: 8,
               padding: '9px 16px',

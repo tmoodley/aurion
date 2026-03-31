@@ -54,7 +54,7 @@ export default function Topbar() {
         {/* Nav */}
         <nav style={{ display: 'flex', gap: 4 }}>
           {['Terminal', 'Portfolio', 'Onramp', 'Markets'].map((item, i) => (
-            <button key={item} onClick={() => router.push('/')} style={{
+            <button key={item} onClick={() => router.push('/terminal')} style={{
               padding: '5px 14px',
               background: i === 0 ? 'rgba(201,168,76,0.12)' : 'transparent',
               border: i === 0 ? '1px solid var(--border-bright)' : '1px solid transparent',
@@ -89,7 +89,7 @@ export default function Topbar() {
                   <button onClick={() => { router.push('/profile'); setMenuOpen(false); }} style={{ display: 'flex', alignItems: 'center', gap: 8, width: '100%', padding: '10px 14px', background: 'transparent', border: 'none', color: 'var(--text-secondary)', fontFamily: 'var(--font-mono)', fontSize: 12, cursor: 'pointer', borderBottom: '1px solid var(--border)', letterSpacing: '0.04em' }}>
                     <User size={13} /> PROFILE
                   </button>
-                  <button onClick={() => { logout(); router.push('/login'); setMenuOpen(false); }} style={{ display: 'flex', alignItems: 'center', gap: 8, width: '100%', padding: '10px 14px', background: 'transparent', border: 'none', color: 'var(--red)', fontFamily: 'var(--font-mono)', fontSize: 12, cursor: 'pointer', letterSpacing: '0.04em' }}>
+                  <button onClick={() => { logout(); router.push('/'); setMenuOpen(false); }} style={{ display: 'flex', alignItems: 'center', gap: 8, width: '100%', padding: '10px 14px', background: 'transparent', border: 'none', color: 'var(--red)', fontFamily: 'var(--font-mono)', fontSize: 12, cursor: 'pointer', letterSpacing: '0.04em' }}>
                     <LogOut size={13} /> SIGN OUT
                   </button>
                 </div>
@@ -97,7 +97,7 @@ export default function Topbar() {
             </div>
           ) : (
             <div style={{ display: 'flex', gap: 6 }}>
-              <button onClick={() => router.push('/login')} style={{ padding: '5px 12px', background: 'transparent', border: '1px solid var(--border)', borderRadius: 4, color: 'var(--text-secondary)', fontFamily: 'var(--font-mono)', fontSize: 11, cursor: 'pointer', letterSpacing: '0.04em' }}>
+              <button onClick={() => router.push('/')} style={{ padding: '5px 12px', background: 'transparent', border: '1px solid var(--border)', borderRadius: 4, color: 'var(--text-secondary)', fontFamily: 'var(--font-mono)', fontSize: 11, cursor: 'pointer', letterSpacing: '0.04em' }}>
                 SIGN IN
               </button>
               <button onClick={() => router.push('/register')} style={{ padding: '5px 12px', background: 'var(--gold)', border: 'none', borderRadius: 4, color: '#090B0E', fontFamily: 'var(--font-mono)', fontSize: 11, fontWeight: 600, cursor: 'pointer', letterSpacing: '0.04em' }}>
