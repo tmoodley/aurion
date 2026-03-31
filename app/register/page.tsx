@@ -73,7 +73,7 @@ export default function RegisterPage() {
     setError('');
     const ok = await register(form);
     setLoading(false);
-    if (ok) router.push('/');
+    if (ok) router.push('/terminal');
   };
 
   const selectStyle = {
@@ -231,7 +231,7 @@ export default function RegisterPage() {
 
         <div style={{ borderTop: '1px solid var(--border)', paddingTop: 16, marginTop: 16, textAlign: 'center' }}>
           <span style={{ fontSize: 13, color: 'var(--text-secondary)' }}>Already have an account? </span>
-          <span onClick={() => router.push('/login')} style={{ fontSize: 13, color: 'var(--gold)', cursor: 'pointer', fontWeight: 500 }}>
+          <span onClick={() => router.push('/')} style={{ fontSize: 13, color: 'var(--gold)', cursor: 'pointer', fontWeight: 500 }}>
             Sign in
           </span>
         </div>

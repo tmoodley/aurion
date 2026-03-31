@@ -21,7 +21,7 @@ export default function LoginPage() {
     setError('');
     const ok = await login(email, password);
     setLoading(false);
-    if (ok) router.push('/');
+    if (ok) router.push('/terminal');
     else setError('Invalid credentials. Try any email + password for this demo.');
   };
 
