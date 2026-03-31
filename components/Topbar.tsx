@@ -1,6 +1,6 @@
 'use client';
 import { useState, useEffect, useRef } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { Bell, Settings, ChevronDown, User, LogOut, X, Check, Monitor, Zap, Globe, Shield, Moon, Sun, Volume2, RefreshCw, Wifi, Database, ChevronRight } from 'lucide-react';
 import { ASSETS } from '@/lib/assets';
 import { useAuth } from '@/lib/auth';
@@ -25,6 +25,7 @@ const ICON_MAP: Record<string, string> = {
 export default function Topbar() {
   const { user, logout } = useAuth();
   const router = useRouter();
+  const pathname = usePathname();
   const [time, setTime] = useState('');
   const [offset, setOffset] = useState(0);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -122,15 +123,17 @@ export default function Topbar() {
 
         {/* Nav */}
         <nav style={{ display: 'flex', gap: 4 }}>
-          {[['Terminal', '/terminal'], ['Portfolio', '/portfolio'], ['Onramp', '/onramp'], ['Markets', '/markets']].map(([item, path], i) => (
+          {[['Terminal', '/terminal'], ['Portfolio', '/portfolio'], ['Onramp', '/onramp'], ['Markets', '/markets']].map(([item, path]) => {
+            const isActive = pathname === path;
+            return (
             <button key={item} onClick={() => router.push(path)} style={{
               padding: '5px 14px',
-              background: i === 0 ? 'rgba(201,168,76,0.12)' : 'transparent',
-              border: i === 0 ? '1px solid var(--border-bright)' : '1px solid transparent',
-              borderRadius: 4, color: i === 0 ? 'var(--gold)' : 'var(--text-secondary)',
+              background: isActive ? 'rgba(201,168,76,0.12)' : 'transparent',
+              border: isActive ? '1px solid var(--border-bright)' : '1px solid transparent',
+              borderRadius: 4, color: isActive ? 'var(--gold)' : 'var(--text-secondary)',
               fontFamily: 'var(--font-mono)', fontSize: 12, cursor: 'pointer', letterSpacing: '0.04em',
             }}>{item as string}</button>
-          ))}
+          )})}
         </nav>
 
         {/* Right */}
