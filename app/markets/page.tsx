@@ -47,7 +47,7 @@ export default function MarketsPage() {
 
   const sorted = [...filtered].sort((a, b) => {
     if (sortBy === 'price') return b.price - a.price;
-    if (sortBy === 'change') return b.delta - a.delta;
+    if (sortBy === 'change') return b.changePct - a.changePct;
     if (sortBy === 'name') return a.key.localeCompare(b.key);
     return 0;
   });
