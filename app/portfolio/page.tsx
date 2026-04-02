@@ -163,28 +163,40 @@ export default function PortfolioPage() {
           {label('HOLDINGS')}
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12, marginBottom: 16 }}>
             {PORTFOLIO.map(p => {
-              const asset = ASSETS[p.asset as keyof typeof ASSETS];
-              const price = asset?.price || 0;
-              const isUp = p.pnl >= 0;
+              const asset = ASSETS[p.key];
+              const currentValue = p.amount * asset.price;
+              const costBasis = p.amount * p.avgBuy;
+              const pnl = currentValue - costBasis;
+              const pnlPct = ((pnl / costBasis) * 100).toFixed(1);
+              const isUp = pnl >= 0;
+              const signalColor = SIGNAL_COLOR[asset.signal];
+              const fmtPrice = asset.price > 1000
+                ? asset.price.toLocaleString()
+                : asset.price.toFixed(2);
               return (
-                <div key={p.asset} onClick={() => router.push('/terminal')} style={{ padding: '14px', background: 'var(--bg-tertiary)', border: '1px solid var(--border)', borderRadius: 7, cursor: 'pointer', transition: 'border-color 0.15s' }}
-                  onMouseEnter={e => (e.currentTarget.style.borderColor = asset?.color || 'var(--border)')}
+                <div key={p.key} onClick={() => router.push('/terminal')}
+                  style={{ padding: '14px', background: 'var(--bg-tertiary)', border: '1px solid var(--border)', borderRadius: 7, cursor: 'pointer', transition: 'border-color 0.15s' }}
+                  onMouseEnter={e => (e.currentTarget.style.borderColor = asset.color)}
                   onMouseLeave={e => (e.currentTarget.style.borderColor = 'var(--border)')}
                 >
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 10 }}>
                     <div>
-                      <div style={{ fontFamily: 'var(--font-mono)', fontSize: 14, fontWeight: 600, color: asset?.color, marginBottom: 2 }}>{p.asset}</div>
-                      <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>{asset?.fullName}</div>
+                      <div style={{ fontFamily: 'var(--font-mono)', fontSize: 14, fontWeight: 600, color: asset.color, marginBottom: 2 }}>{p.key}</div>
+                      <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>{asset.fullName}</div>
                     </div>
-                    <div style={{ fontSize: 11, padding: '2px 7px', borderRadius: 3, background: `${asset?.signalColor}18`, border: `1px solid ${asset?.signalColor}44`, color: asset?.signalColor, fontFamily: 'var(--font-mono)' }}>{asset?.signal}</div>
+                    <div style={{ fontSize: 11, padding: '2px 7px', borderRadius: 3, background: `${signalColor}18`, border: `1px solid ${signalColor}44`, color: signalColor, fontFamily: 'var(--font-mono)' }}>
+                      {asset.signal}
+                    </div>
                   </div>
-                  <div style={{ fontFamily: 'var(--font-mono)', fontSize: 18, color: 'var(--text-primary)', marginBottom: 4 }}>${p.value.toLocaleString()}</div>
+                  <div style={{ fontFamily: 'var(--font-mono)', fontSize: 18, color: 'var(--text-primary)', marginBottom: 4 }}>
+                    ${currentValue.toLocaleString('en', { maximumFractionDigits: 0 })}
+                  </div>
                   <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11 }}>
-                    <span style={{ color: 'var(--text-muted)' }}>{p.amount} {asset?.unit}</span>
-                    <span style={{ color: isUp ? 'var(--green)' : 'var(--red)' }}>{isUp ? '+' : ''}{p.pnl}% P&L</span>
+                    <span style={{ color: 'var(--text-muted)' }}>{p.amount} units</span>
+                    <span style={{ color: isUp ? 'var(--green)' : 'var(--red)' }}>{isUp ? '+' : ''}{pnlPct}% P&L</span>
                   </div>
                   <div style={{ marginTop: 8, fontSize: 11, color: 'var(--text-muted)' }}>
-                    @ ${price > 1000 ? price.toLocaleString() : price.toFixed(2)} / {asset?.unit}
+                    @ ${fmtPrice} / unit
                   </div>
                 </div>
               );
