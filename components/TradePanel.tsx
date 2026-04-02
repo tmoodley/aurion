@@ -2,158 +2,126 @@
 import { useState } from 'react';
 import { Asset } from '@/lib/assets';
 
-interface Props { asset: Asset; }
-
-export default function TradePanel({ asset }: Props) {
+export default function TradePanel({ asset }: { asset: Asset }) {
   const [side, setSide] = useState<'buy' | 'sell'>('buy');
   const [amount, setAmount] = useState('500');
-  const [submitted, setSubmitted] = useState(false);
+  const [done, setDone] = useState(false);
 
-  const usdAmount = parseFloat(amount) || 0;
-  const receive = usdAmount / asset.price;
-  const fee = usdAmount * 0.001;
+  const usd = parseFloat(amount) || 0;
+  const receive = usd / asset.price;
+  const fee = usd * 0.001;
+  const fmt = (p: number) => p > 1000 ? '$' + p.toLocaleString() : '$' + p.toFixed(2);
+  const fmtReceive = (v: number) => v < 0.01 ? v.toFixed(6) : v > 100 ? v.toFixed(2) : v.toFixed(4);
 
-  const formatReceive = (val: number) =>
-    val < 0.01 ? val.toFixed(6) : val > 100 ? val.toFixed(2) : val.toFixed(4);
-
-  const formatPrice = (price: number) =>
-    price > 1000 ? `$${price.toLocaleString()}` : `$${price.toFixed(2)}`;
-
-  const handleSubmit = () => {
-    setSubmitted(true);
-    setTimeout(() => setSubmitted(false), 2500);
+  const s: Record<string, React.CSSProperties> = {
+    label: { fontSize: 9, color: '#4A4844', fontFamily: 'IBM Plex Mono, monospace', letterSpacing: '0.1em', marginBottom: 6, display: 'block' },
+    input: {
+      width: '100%',
+      background: '#131820',
+      border: '1px solid rgba(201,168,76,0.2)',
+      borderRadius: 3,
+      color: '#E8E4D9',
+      fontFamily: 'IBM Plex Mono, monospace',
+      fontSize: 14,
+      padding: '8px 10px',
+      outline: 'none',
+      marginBottom: 10,
+    },
+    quickBtn: (v: string): React.CSSProperties => ({
+      flex: 1,
+      background: amount === v ? 'rgba(201,168,76,0.1)' : 'transparent',
+      border: `1px solid ${amount === v ? 'rgba(201,168,76,0.4)' : 'rgba(255,255,255,0.07)'}`,
+      color: amount === v ? '#C9A84C' : '#4A4844',
+      fontFamily: 'IBM Plex Mono, monospace',
+      fontSize: 10,
+      padding: '5px 4px',
+      borderRadius: 2,
+      cursor: 'pointer',
+    }),
+    row: { display: 'flex', justifyContent: 'space-between', marginBottom: 6 },
+    rowLabel: { fontSize: 10, color: '#4A4844' },
+    rowVal: { fontSize: 10, color: '#8A8880', fontFamily: 'IBM Plex Mono, monospace' },
   };
 
+  if (done) return (
+    <div style={{ padding: 16, textAlign: 'center' }}>
+      <div style={{ fontSize: 28, marginBottom: 8 }}>✓</div>
+      <div style={{ fontFamily: 'IBM Plex Mono, monospace', color: '#2ECC8A', fontSize: 13, marginBottom: 4 }}>Order submitted</div>
+      <div style={{ fontSize: 11, color: '#4A4844', marginBottom: 16 }}>
+        {side === 'buy' ? 'Buying' : 'Selling'} {fmtReceive(receive)} {asset.name}
+      </div>
+      <button onClick={() => setDone(false)} style={{ ...s.quickBtn(''), flex: 'none', padding: '6px 16px', color: '#C9A84C', border: '1px solid rgba(201,168,76,0.4)' }}>
+        New order
+      </button>
+    </div>
+  );
+
   return (
-    <div style={{
-      background: 'var(--bg-card)',
-      border: '1px solid var(--border)',
-      borderRadius: 8,
-      padding: 16,
-      marginBottom: 12,
-    }}>
-      <div style={{ fontFamily: 'var(--font-mono)', fontSize: 10, color: 'var(--text-muted)', letterSpacing: '0.08em', marginBottom: 12 }}>
-        TRADE {asset.key}
-      </div>
-
+    <div style={{ padding: 16 }}>
       {/* Side toggle */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 4, marginBottom: 14, background: 'var(--bg-tertiary)', padding: 3, borderRadius: 6 }}>
-        {(['buy', 'sell'] as const).map(s => (
-          <button
-            key={s}
-            onClick={() => setSide(s)}
-            style={{
-              padding: '7px',
-              border: 'none',
-              borderRadius: 4,
-              background: side === s ? (s === 'buy' ? 'var(--green)' : 'var(--red)') : 'transparent',
-              color: side === s ? '#fff' : 'var(--text-secondary)',
-              fontFamily: 'var(--font-mono)',
-              fontSize: 12,
-              fontWeight: 600,
-              cursor: 'pointer',
-              letterSpacing: '0.06em',
-              transition: 'all 0.15s',
-            }}
-          >
-            {s.toUpperCase()}
-          </button>
-        ))}
-      </div>
-
-      {/* Amount input */}
-      <div style={{ marginBottom: 10 }}>
-        <div style={{ fontSize: 11, color: 'var(--text-muted)', marginBottom: 5 }}>Amount (USD)</div>
-        <div style={{ position: 'relative' }}>
-          <span style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', color: 'var(--text-secondary)', fontFamily: 'var(--font-mono)', fontSize: 13 }}>$</span>
-          <input
-            type="number"
-            value={amount}
-            onChange={e => setAmount(e.target.value)}
-            style={{
-              width: '100%',
-              padding: '9px 10px 9px 22px',
-              background: 'var(--bg-tertiary)',
-              border: '1px solid var(--border)',
-              borderRadius: 5,
-              color: 'var(--text-primary)',
-              fontFamily: 'var(--font-mono)',
-              fontSize: 14,
-              outline: 'none',
-            }}
-          />
-        </div>
-      </div>
-
-      {/* Quick amounts */}
-      <div style={{ display: 'flex', gap: 4, marginBottom: 12 }}>
-        {[100, 500, 1000, 5000].map(amt => (
-          <button key={amt} onClick={() => setAmount(String(amt))} style={{
-            flex: 1, padding: '4px 0',
-            background: 'var(--bg-tertiary)', border: '1px solid var(--border)',
-            borderRadius: 3, color: 'var(--text-muted)',
-            fontFamily: 'var(--font-mono)', fontSize: 10, cursor: 'pointer',
+      <div style={{ display: 'flex', gap: 4, marginBottom: 14 }}>
+        {(['buy', 'sell'] as const).map(t => (
+          <button key={t} onClick={() => setSide(t)} style={{
+            flex: 1,
+            background: side === t ? (t === 'buy' ? 'rgba(46,204,138,0.12)' : 'rgba(224,82,82,0.12)') : 'transparent',
+            border: `1px solid ${side === t ? (t === 'buy' ? '#2ECC8A' : '#E05252') : 'rgba(255,255,255,0.07)'}`,
+            color: side === t ? (t === 'buy' ? '#2ECC8A' : '#E05252') : '#4A4844',
+            fontFamily: 'IBM Plex Mono, monospace',
+            fontSize: 11,
+            padding: '7px',
+            borderRadius: 2,
+            cursor: 'pointer',
+            letterSpacing: '0.06em',
           }}>
-            ${amt >= 1000 ? `${amt / 1000}k` : amt}
+            {t.toUpperCase()}
           </button>
         ))}
       </div>
 
-      {/* Receive */}
-      <div style={{ marginBottom: 14 }}>
-        <div style={{ fontSize: 11, color: 'var(--text-muted)', marginBottom: 5 }}>You receive ({asset.unit})</div>
-        <div style={{
-          padding: '9px 10px',
-          background: 'var(--bg-tertiary)',
-          border: '1px solid var(--border)',
-          borderRadius: 5,
-          fontFamily: 'var(--font-mono)',
-          fontSize: 14,
-          color: asset.color,
-        }}>
-          {formatReceive(receive)} <span style={{ color: 'var(--text-muted)', fontSize: 11 }}>{asset.unit}</span>
-        </div>
-      </div>
+      <label style={s.label}>AMOUNT (USD)</label>
+      <input
+        style={s.input}
+        value={amount}
+        onChange={e => setAmount(e.target.value)}
+        placeholder="0.00"
+        type="number"
+      />
 
-      {/* Order summary */}
-      <div style={{ padding: '8px 10px', background: 'var(--bg-tertiary)', border: '1px solid var(--border)', borderRadius: 5, marginBottom: 12 }}>
-        {[
-          { label: 'Market price', value: formatPrice(asset.price) },
-          { label: 'Network fee (0.1%)', value: `$${fee.toFixed(2)}` },
-          { label: 'Settlement', value: asset.chain },
-        ].map(row => (
-          <div key={row.label} style={{ display: 'flex', justifyContent: 'space-between', padding: '3px 0', borderBottom: '1px solid var(--border)' }}>
-            <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>{row.label}</span>
-            <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--text-secondary)' }}>{row.value}</span>
-          </div>
+      <div style={{ display: 'flex', gap: 4, marginBottom: 14 }}>
+        {['100', '500', '1000', '5000'].map(v => (
+          <button key={v} style={s.quickBtn(v)} onClick={() => setAmount(v)}>
+            ${v === '1000' ? '1K' : v === '5000' ? '5K' : v}
+          </button>
         ))}
       </div>
 
-      {/* Submit */}
+      <div style={{ background: '#131820', borderRadius: 3, padding: '10px 12px', marginBottom: 12, border: '1px solid rgba(255,255,255,0.05)' }}>
+        <div style={s.row}><span style={s.rowLabel}>Price</span><span style={s.rowVal}>{fmt(asset.price)}</span></div>
+        <div style={s.row}><span style={s.rowLabel}>You receive</span><span style={{ ...s.rowVal, color: '#C9A84C' }}>{fmtReceive(receive)} {asset.name}</span></div>
+        <div style={s.row}><span style={s.rowLabel}>Fee (0.1%)</span><span style={s.rowVal}>${fee.toFixed(2)}</span></div>
+        <div style={{ ...s.row, marginBottom: 0, paddingTop: 6, borderTop: '1px solid rgba(255,255,255,0.05)' }}>
+          <span style={s.rowLabel}>Total</span>
+          <span style={{ ...s.rowVal, color: '#E8E4D9' }}>${(usd + fee).toFixed(2)}</span>
+        </div>
+      </div>
+
       <button
-        onClick={handleSubmit}
+        onClick={() => setDone(true)}
         style={{
           width: '100%',
-          padding: '11px',
-          background: submitted ? 'var(--green)' : side === 'buy' ? 'var(--green)' : 'var(--red)',
-          border: 'none',
-          borderRadius: 5,
-          color: '#fff',
-          fontFamily: 'var(--font-mono)',
-          fontSize: 13,
-          fontWeight: 600,
+          background: side === 'buy' ? 'rgba(46,204,138,0.12)' : 'rgba(224,82,82,0.12)',
+          border: `1px solid ${side === 'buy' ? '#2ECC8A' : '#E05252'}`,
+          color: side === 'buy' ? '#2ECC8A' : '#E05252',
+          fontFamily: 'IBM Plex Mono, monospace',
+          fontSize: 11,
+          padding: '10px',
+          borderRadius: 2,
           cursor: 'pointer',
-          letterSpacing: '0.06em',
-          transition: 'opacity 0.15s',
-          opacity: submitted ? 0.7 : 1,
+          letterSpacing: '0.08em',
         }}
       >
-        {submitted ? 'ORDER PLACED' : `${side === 'buy' ? 'BUY' : 'SELL'} ${asset.key}`}
+        {side === 'buy' ? 'BUY' : 'SELL'} {asset.name}
       </button>
-
-      <div style={{ fontSize: 10, color: 'var(--text-muted)', textAlign: 'center', marginTop: 8 }}>
-        Powered by Ndeipi rails · ABSA custody · Polygon settlement
-      </div>
     </div>
   );
 }

@@ -1,96 +1,87 @@
 'use client';
+import { useState } from 'react';
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts';
 import { Asset } from '@/lib/assets';
 
-const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
+const LABELS = ['Mar 9','Mar 11','Mar 13','Mar 15','Mar 17','Mar 19','Mar 21','Mar 23','Mar 25','Mar 27','Mar 29','Mar 31','Apr 1','Apr 2'];
 
-interface Props { asset: Asset; }
-
-const CustomTooltip = ({ active, payload, label }: any) => {
-  if (!active || !payload?.length) return null;
-  const val = payload[0].value;
-  const formatted = val > 1000 ? `$${val.toLocaleString()}` : `$${val.toFixed(2)}`;
-  return (
-    <div style={{
-      background: 'var(--bg-tertiary)',
-      border: '1px solid var(--border-bright)',
-      borderRadius: 4,
-      padding: '6px 10px',
-      fontFamily: 'var(--font-mono)',
-      fontSize: 12,
-    }}>
-      <div style={{ color: 'var(--text-secondary)', marginBottom: 2 }}>{label}</div>
-      <div style={{ color: 'var(--text-primary)', fontWeight: 600 }}>{formatted}</div>
-    </div>
-  );
-};
-
-export default function PriceChart({ asset }: Props) {
-  const data = asset.history.map((price, i) => ({ day: DAYS[i] || `D${i}`, price }));
-  const minPrice = Math.min(...asset.history);
-  const maxPrice = Math.max(...asset.history);
-  const padding = (maxPrice - minPrice) * 0.1;
-
-  const formatY = (val: number) =>
-    val > 1000 ? `$${(val / 1000).toFixed(1)}k` : `$${val.toFixed(2)}`;
+export default function PriceChart({ asset }: { asset: Asset }) {
+  const [tf, setTf] = useState('30D');
+  const data = asset.priceHistory.map((price, i) => ({ date: LABELS[i] || `Day ${i+1}`, price }));
+  const isUp = asset.changePct >= 0;
+  const tfs = ['1D', '7D', '30D', '90D', 'ALL'];
+  const fmt = (p: number) => p > 100 ? '$' + p.toLocaleString() : '$' + p.toFixed(2);
 
   return (
-    <div style={{
-      background: 'var(--bg-card)',
-      border: '1px solid var(--border)',
-      borderRadius: 8,
-      padding: '16px',
-      marginBottom: 12,
-    }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-        <div>
-          <span style={{ fontFamily: 'var(--font-mono)', fontSize: 13, color: asset.color }}>{asset.key}</span>
-          <span style={{ color: 'var(--text-muted)', fontSize: 12, marginLeft: 8 }}>/ USD — 12 day</span>
+    <div style={{ flex: 1, padding: '12px 16px', display: 'flex', flexDirection: 'column', minHeight: 0 }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
+        <div style={{ fontSize: 10, color: '#4A4844', fontFamily: 'IBM Plex Mono, monospace', letterSpacing: '0.1em' }}>
+          PRICE CHART — {asset.name} — 30-DAY
         </div>
         <div style={{ display: 'flex', gap: 4 }}>
-          {['1D', '7D', '1M', '3M'].map((t, i) => (
-            <button key={t} style={{
-              padding: '2px 8px',
-              fontFamily: 'var(--font-mono)',
-              fontSize: 10,
-              background: i === 1 ? 'rgba(201,168,76,0.12)' : 'transparent',
-              border: i === 1 ? '1px solid var(--border-bright)' : '1px solid var(--border)',
-              borderRadius: 3,
-              color: i === 1 ? 'var(--gold)' : 'var(--text-muted)',
-              cursor: 'pointer',
-            }}>{t}</button>
+          {tfs.map(t => (
+            <button
+              key={t}
+              onClick={() => setTf(t)}
+              style={{
+                background: tf === t ? 'rgba(201,168,76,0.12)' : 'transparent',
+                border: `1px solid ${tf === t ? 'rgba(201,168,76,0.4)' : 'rgba(255,255,255,0.07)'}`,
+                color: tf === t ? '#C9A84C' : '#4A4844',
+                fontFamily: 'IBM Plex Mono, monospace',
+                fontSize: 10,
+                padding: '3px 8px',
+                borderRadius: 2,
+                cursor: 'pointer',
+                letterSpacing: '0.04em',
+              }}
+            >
+              {t}
+            </button>
           ))}
         </div>
       </div>
 
-      <ResponsiveContainer width="100%" height={180}>
-        <LineChart data={data} margin={{ top: 4, right: 4, left: 0, bottom: 0 }}>
-          <XAxis
-            dataKey="day"
-            tick={{ fill: 'var(--text-muted)', fontSize: 10, fontFamily: 'IBM Plex Mono' }}
-            axisLine={false}
-            tickLine={false}
-          />
-          <YAxis
-            domain={[minPrice - padding, maxPrice + padding]}
-            tick={{ fill: 'var(--text-muted)', fontSize: 10, fontFamily: 'IBM Plex Mono' }}
-            axisLine={false}
-            tickLine={false}
-            tickFormatter={formatY}
-            width={56}
-          />
-          <Tooltip content={<CustomTooltip />} cursor={{ stroke: 'var(--border-bright)', strokeWidth: 1 }} />
-          <ReferenceLine y={asset.history[0]} stroke="var(--border)" strokeDasharray="3 3" />
-          <Line
-            type="monotone"
-            dataKey="price"
-            stroke={asset.color}
-            strokeWidth={2}
-            dot={false}
-            activeDot={{ r: 4, fill: asset.color, stroke: 'var(--bg-primary)', strokeWidth: 2 }}
-          />
-        </LineChart>
-      </ResponsiveContainer>
+      <div style={{ flex: 1, minHeight: 180 }}>
+        <ResponsiveContainer width="100%" height="100%">
+          <LineChart data={data} margin={{ top: 4, right: 4, left: 0, bottom: 0 }}>
+            <XAxis
+              dataKey="date"
+              tick={{ fill: '#4A4844', fontSize: 9, fontFamily: 'IBM Plex Mono, monospace' }}
+              tickLine={false}
+              axisLine={false}
+              interval={2}
+            />
+            <YAxis
+              domain={['auto', 'auto']}
+              tick={{ fill: '#4A4844', fontSize: 9, fontFamily: 'IBM Plex Mono, monospace' }}
+              tickLine={false}
+              axisLine={false}
+              tickFormatter={fmt}
+              width={70}
+            />
+            <Tooltip
+              contentStyle={{
+                background: '#0F1318',
+                border: '1px solid rgba(201,168,76,0.3)',
+                borderRadius: 3,
+                fontFamily: 'IBM Plex Mono, monospace',
+                fontSize: 11,
+                color: '#E8E4D9',
+              }}
+              formatter={(val: number) => [fmt(val), asset.name]}
+              labelStyle={{ color: '#4A4844', fontSize: 10 }}
+            />
+            <Line
+              type="monotone"
+              dataKey="price"
+              stroke={isUp ? '#2ECC8A' : '#E05252'}
+              strokeWidth={1.5}
+              dot={false}
+              activeDot={{ r: 3, fill: asset.color }}
+            />
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
     </div>
   );
 }

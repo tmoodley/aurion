@@ -1,100 +1,104 @@
 'use client';
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { useAuth } from '@/lib/auth';
-import AuthLayout from '@/components/AuthLayout';
-import FormField from '@/components/FormField';
+import Topbar from '@/components/Topbar';
+import AssetSidebar from '@/components/AssetSidebar';
+import AssetStats from '@/components/AssetStats';
+import PriceChart from '@/components/PriceChart';
+import AISignalPanel from '@/components/AISignalPanel';
+import GeniePanel from '@/components/GeniePanel';
+import TradePanel from '@/components/TradePanel';
+import PortfolioPanel from '@/components/PortfolioPanel';
+import OnrampPanel from '@/components/OnrampPanel';
+import WalletPanel from '@/components/WalletPanel';
+import { ASSETS, AssetKey } from '@/lib/assets';
 
-export default function LoginPage() {
-  const { login } = useAuth();
-  const router = useRouter();
+type RightTab = 'trade' | 'portfolio' | 'onramp' | 'wallet';
 
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+const RIGHT_TABS: { key: RightTab; label: string }[] = [
+  { key: 'trade', label: 'TRADE' },
+  { key: 'portfolio', label: 'PORTFOLIO' },
+  { key: 'onramp', label: 'ONRAMP' },
+  { key: 'wallet', label: 'WALLET' },
+];
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!email || !password) { setError('Please enter your email and password.'); return; }
-    setLoading(true);
-    setError('');
-    const ok = await login(email, password);
-    setLoading(false);
-    if (ok) router.push('/terminal');
-    else setError('Invalid credentials. Try any email + password for this demo.');
+export default function Home() {
+  const [selectedAsset, setSelectedAsset] = useState<AssetKey>('BTC');
+  const [rightTab, setRightTab] = useState<RightTab>('trade');
+  const asset = ASSETS[selectedAsset];
+
+  const s: Record<string, React.CSSProperties> = {
+    root: { display: 'flex', flexDirection: 'column', height: '100vh', overflow: 'hidden', background: '#090B0E' },
+    body: { display: 'flex', flex: 1, overflow: 'hidden' },
+    center: { flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' },
+    chartArea: { flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' },
+    right: {
+      width: 240,
+      flexShrink: 0,
+      background: '#0E1117',
+      borderLeft: '1px solid rgba(201,168,76,0.15)',
+      display: 'flex',
+      flexDirection: 'column',
+      overflow: 'hidden',
+    },
+    tabBar: {
+      display: 'flex',
+      borderBottom: '1px solid rgba(201,168,76,0.12)',
+      flexShrink: 0,
+    },
+    tab: (active: boolean): React.CSSProperties => ({
+      flex: 1,
+      padding: '9px 4px',
+      background: 'transparent',
+      border: 'none',
+      borderBottom: active ? '2px solid #C9A84C' : '2px solid transparent',
+      color: active ? '#C9A84C' : '#4A4844',
+      fontFamily: 'IBM Plex Mono, monospace',
+      fontSize: 9,
+      cursor: 'pointer',
+      letterSpacing: '0.06em',
+    }),
+    tabContent: { flex: 1, overflowY: 'auto' },
   };
 
   return (
-    <AuthLayout
-      title="Welcome back"
-      subtitle="Sign in to your AURION trading account"
-    >
-      <form onSubmit={handleSubmit}>
-        <FormField
-          label="Email"
-          type="email"
-          placeholder="you@example.com"
-          value={email}
-          onChange={e => setEmail(e.target.value)}
-          autoComplete="email"
-        />
-        <FormField
-          label="Password"
-          type="password"
-          placeholder="••••••••"
-          value={password}
-          onChange={e => setPassword(e.target.value)}
-          autoComplete="current-password"
-        />
+    <div style={s.root}>
+      <Topbar />
+      <div style={s.body}>
+        <AssetSidebar selected={selectedAsset} onSelect={setSelectedAsset} />
 
-        {error && (
-          <div style={{ padding: '8px 12px', background: 'rgba(224,82,82,0.1)', border: '1px solid rgba(224,82,82,0.3)', borderRadius: 5, fontSize: 12, color: 'var(--red)', marginBottom: 14 }}>
-            {error}
+        <div style={s.center}>
+          <AssetStats asset={asset} />
+
+          <div style={s.chartArea}>
+            <AISignalPanel asset={asset} />
+            <PriceChart asset={asset} />
           </div>
-        )}
 
-        <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 16 }}>
-          <span style={{ fontSize: 12, color: 'var(--gold)', cursor: 'pointer' }}>Forgot password?</span>
+          {/* Genie AI Hedge Panel -- docked at bottom of center column */}
+          <GeniePanel />
         </div>
 
-        <button
-          type="submit"
-          disabled={loading}
-          style={{
-            width: '100%',
-            padding: '11px',
-            background: loading ? 'var(--bg-tertiary)' : 'var(--gold)',
-            border: 'none',
-            borderRadius: 5,
-            color: loading ? 'var(--text-muted)' : '#090B0E',
-            fontFamily: 'var(--font-mono)',
-            fontSize: 13,
-            fontWeight: 600,
-            cursor: loading ? 'not-allowed' : 'pointer',
-            letterSpacing: '0.08em',
-            transition: 'all 0.15s',
-            marginBottom: 16,
-          }}
-        >
-          {loading ? 'AUTHENTICATING...' : 'SIGN IN'}
-        </button>
-
-        {/* Demo hint */}
-        <div style={{ padding: '8px 12px', background: 'rgba(201,168,76,0.06)', border: '1px solid var(--border)', borderRadius: 5, fontSize: 11, color: 'var(--text-muted)', marginBottom: 16, fontFamily: 'var(--font-mono)' }}>
-          Demo: enter any email + password to sign in
+        {/* Right sidebar */}
+        <div style={s.right}>
+          <div style={s.tabBar}>
+            {RIGHT_TABS.map(t => (
+              <button
+                key={t.key}
+                style={s.tab(rightTab === t.key)}
+                onClick={() => setRightTab(t.key)}
+              >
+                {t.label}
+              </button>
+            ))}
+          </div>
+          <div style={s.tabContent}>
+            {rightTab === 'trade' && <TradePanel asset={asset} />}
+            {rightTab === 'portfolio' && <PortfolioPanel />}
+            {rightTab === 'onramp' && <OnrampPanel />}
+            {rightTab === 'wallet' && <WalletPanel />}
+          </div>
         </div>
-
-        <div style={{ borderTop: '1px solid var(--border)', paddingTop: 16, textAlign: 'center' }}>
-          <span style={{ fontSize: 13, color: 'var(--text-secondary)' }}>No account? </span>
-          <span
-            onClick={() => router.push('/register')}
-            style={{ fontSize: 13, color: 'var(--gold)', cursor: 'pointer', fontWeight: 500 }}
-          >
-            Create one
-          </span>
-        </div>
-      </form>
-    </AuthLayout>
+      </div>
+    </div>
   );
 }
