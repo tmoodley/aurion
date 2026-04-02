@@ -6,6 +6,13 @@ import { ASSETS, AssetKey } from '@/lib/assets';
 import { TrendingUp, TrendingDown, ArrowUpRight } from 'lucide-react';
 import { LineChart, Line, ResponsiveContainer } from 'recharts';
 
+const SIGNAL_COLOR: Record<string, string> = {
+  BUY: '#2ECC8A',
+  ACCUMULATE: '#4A9ECC',
+  HOLD: '#C9A84C',
+  SELL: '#E05252',
+};
+
 const MARKET_NEWS = [
   { headline: 'Migodi-Auric certifies 3.2t gold production via NodeBoss batch #2847', time: '2h ago', tag: 'ORACLE', color: '#C9A84C' },
   { headline: 'Zambia copper output up 8.4% YoY — LME copper futures rally', time: '4h ago', tag: 'COPPER', color: '#E05252' },
@@ -142,14 +149,14 @@ export default function MarketsPage() {
                     {asset.changePct  >= 0 ? <TrendingUp size={11} /> : <TrendingDown size={11} />}
                     {asset.changePct  >= 0 ? '+' : ''}{asset.changePct .toFixed(1)}%
                   </div>
-                  <div style={{ fontFamily: 'var(--font-mono)', fontSize: 12, color: 'var(--text-secondary)' }}>{asset.volume}</div>
+                  <div style={{ fontFamily: 'var(--font-mono)', fontSize: 12, color: 'var(--text-secondary)' }}>{asset.volume24h}</div>
                   <div>
-                    <span style={{ fontFamily: 'var(--font-mono)', fontSize: 9, padding: '2px 6px', borderRadius: 3, background: `${asset.signalColor}18`, border: `1px solid ${asset.signalColor}33`, color: asset.signalColor, letterSpacing: '0.04em' }}>
+                    <span style={{ fontFamily: 'var(--font-mono)', fontSize: 9, padding: '2px 6px', borderRadius: 3, background: `${SIGNAL_COLOR[asset.signal]}18`, border: `1px solid ${SIGNAL_COLOR[asset.signal]}33`, color: SIGNAL_COLOR[asset.signal], letterSpacing: '0.04em' }}>
                       {asset.signal}
                     </span>
                   </div>
                   <div>
-                    <MiniChart history={asset.history} color={asset.color} />
+                    <MiniChart history={asset.priceHistory} color={asset.color} />
                   </div>
                 </div>
               ))}
