@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Topbar from '@/components/Topbar';
-import { ASSETS, PORTFOLIO } from '@/lib/assets';
+import { ASSETS, PORTFOLIO, SIGNAL_COLOR } from '@/lib/assets';
 import { TrendingUp, TrendingDown, ArrowUpRight, ArrowDownLeft, RefreshCw } from 'lucide-react';
 import { LineChart, Line, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 

@@ -2,16 +2,9 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Topbar from '@/components/Topbar';
-import { ASSETS, AssetKey } from '@/lib/assets';
+import { ASSETS, SIGNAL_COLOR } from '@/lib/assets';
 import { TrendingUp, TrendingDown, ArrowUpRight } from 'lucide-react';
 import { LineChart, Line, ResponsiveContainer } from 'recharts';
-
-const SIGNAL_COLOR: Record<string, string> = {
-  BUY: '#2ECC8A',
-  ACCUMULATE: '#4A9ECC',
-  HOLD: '#C9A84C',
-  SELL: '#E05252',
-};
 
 const MARKET_NEWS = [
   { headline: 'Migodi-Auric certifies 3.2t gold production via NodeBoss batch #2847', time: '2h ago', tag: 'ORACLE', color: '#C9A84C' },

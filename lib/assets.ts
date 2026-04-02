@@ -26,6 +26,13 @@ export const ONRAMPS = [
   { id: 'swift',   label: 'SWIFT / Wire', name: 'SWIFT / Wire', region: 'Global',      color: '#4A9ECC', icon: '🌐', desc: 'Bank wire — global diaspora corridors' },
 ];
 
+export const SIGNAL_COLOR: Record<string, string> = {
+  BUY: '#2ECC8A',
+  ACCUMULATE: '#4A9ECC',
+  HOLD: '#C9A84C',
+  SELL: '#E05252',
+};
+
 export const PORTFOLIO = [
   {
     key: 'BTC' as AssetKey,
