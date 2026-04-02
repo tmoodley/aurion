@@ -68,7 +68,7 @@ export default function MarketsPage() {
 
   return (
     <div style={{ minHeight: '100vh', background: 'var(--bg-primary)', display: 'flex', flexDirection: 'column' }}>
-      <Topbar />
+      <Topbar onNotifClick={() => {}} />
       <div style={{ maxWidth: 1100, margin: '0 auto', width: '100%', padding: '24px 20px' }}>
 
         {/* Header */}
