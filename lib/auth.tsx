@@ -2,6 +2,7 @@
 import { createContext, useContext, useState, ReactNode } from 'react';
 
 export interface User {
+  id: string;
   name: string;
   firstName: string;
   lastName: string;
@@ -32,6 +33,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const login = async (email: string, _pass: string) => {
     await new Promise(r => setTimeout(r, 900));
     setUser({
+      id: 'NDX-TM-001',
       name: 'Dr. T. Moodley',
       firstName: 'Tyrone',
       lastName: 'Moodley',
@@ -49,6 +51,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const register = async (name: string, email: string, _pass: string) => {
     await new Promise(r => setTimeout(r, 1000));
     setUser({
+      id: 'NDX-' + Date.now(),
       name,
       firstName: name.split(' ')[0],
       lastName: name.split(' ').slice(1).join(' '),
