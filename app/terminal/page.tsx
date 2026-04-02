@@ -27,7 +27,7 @@ export default function Home() {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', overflow: 'hidden' }}>
-      <Topbar />
+      <Topbar onNotifClick={() => {}} />
       <div style={{ display: 'flex', flex: 1, overflow: 'hidden' }}>
         <AssetSidebar selected={selectedAsset} onSelect={setSelectedAsset} />
         <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
