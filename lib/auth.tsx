@@ -3,7 +3,10 @@ import { createContext, useContext, useState, ReactNode } from 'react';
 
 export interface User {
   name: string;
+  firstName: string;
+  lastName: string;
   email: string;
+  phone: string;
   role: string;
   avatar: string;
   kycStatus: 'verified' | 'pending' | 'unverified';
@@ -28,7 +31,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     await new Promise(r => setTimeout(r, 900));
     setUser({
       name: 'Dr. T. Moodley',
+      firstName: 'Tyrone',
+      lastName: 'Moodley',
       email,
+      phone: '+1 647 000 0000',
       role: 'Founder & CEO — Ndeipi Inc.',
       avatar: 'TM',
       kycStatus: 'verified',
@@ -38,7 +44,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const register = async (name: string, email: string, _pass: string) => {
     await new Promise(r => setTimeout(r, 1000));
-    setUser({ name, email, role: 'AURION Trader', avatar: name.slice(0, 2).toUpperCase(), kycStatus: 'pending' });
+    setUser({
+      name,
+      firstName: name.split(' ')[0],
+      lastName: name.split(' ').slice(1).join(' '),
+      email,
+      phone: '',
+      role: 'AURION Trader',
+      avatar: name.slice(0, 2).toUpperCase(),
+      kycStatus: 'pending',
+    });
     return true;
   };
 
