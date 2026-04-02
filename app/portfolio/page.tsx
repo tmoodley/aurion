@@ -123,20 +123,24 @@ export default function PortfolioPage() {
               })}
             </div>
             {PORTFOLIO.map(p => {
-              const asset = ASSETS[p.asset as keyof typeof ASSETS];
-              const isUp = p.pnl >= 0;
+              const asset = ASSETS[p.key];
+              const currentValue = p.amount * asset.price;
+              const costBasis = p.amount * p.avgBuy;
+              const pnl = currentValue - costBasis;
+              const pnlPct = ((pnl / costBasis) * 100).toFixed(1);
+              const isUp = pnl >= 0;
               return (
-                <div key={p.asset} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 0', borderBottom: '1px solid var(--border)' }}>
+                <div key={p.key} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 0', borderBottom: '1px solid var(--border)' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                    <div style={{ width: 10, height: 10, borderRadius: '50%', background: asset?.color, flexShrink: 0 }} />
+                    <div style={{ width: 10, height: 10, borderRadius: '50%', background: asset.color, flexShrink: 0 }} />
                     <div>
-                      <div style={{ fontFamily: 'var(--font-mono)', fontSize: 12, color: 'var(--text-primary)', marginBottom: 1 }}>{p.asset}</div>
-                      <div style={{ fontSize: 10, color: 'var(--text-muted)' }}>{p.amount} {asset?.unit}</div>
+                      <div style={{ fontFamily: 'var(--font-mono)', fontSize: 12, color: 'var(--text-primary)', marginBottom: 1 }}>{p.key}</div>
+                      <div style={{ fontSize: 10, color: 'var(--text-muted)' }}>{p.amount} units</div>
                     </div>
                   </div>
                   <div style={{ textAlign: 'right' }}>
-                    <div style={{ fontFamily: 'var(--font-mono)', fontSize: 13, color: 'var(--text-primary)', marginBottom: 1 }}>${p.value.toLocaleString()}</div>
-                    <div style={{ fontSize: 11, color: isUp ? 'var(--green)' : 'var(--red)' }}>{isUp ? '+' : ''}{p.pnl}%</div>
+                    <div style={{ fontFamily: 'var(--font-mono)', fontSize: 13, color: 'var(--text-primary)', marginBottom: 1 }}>${currentValue.toLocaleString('en', { maximumFractionDigits: 0 })}</div>
+                    <div style={{ fontSize: 11, color: isUp ? 'var(--green)' : 'var(--red)' }}>{isUp ? '+' : ''}{pnlPct}%</div>
                   </div>
                 </div>
               );
