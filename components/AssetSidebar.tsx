@@ -3,74 +3,115 @@ import { ASSETS, AssetKey } from '@/lib/assets';
 
 interface Props {
   selected: AssetKey;
-  onSelect: (key: AssetKey) => void;
+  onSelect: (k: AssetKey) => void;
 }
 
 export default function AssetSidebar({ selected, onSelect }: Props) {
-  const formatPrice = (price: number) =>
-    price > 1000 ? `$${price.toLocaleString()}` : `$${price.toFixed(2)}`;
+  const keys: AssetKey[] = ['BTC', 'AGD', 'COOP', 'NDX', 'COPPER'];
 
-  return (
-    <div style={{
-      width: 200,
-      background: 'var(--bg-secondary)',
-      borderRight: '1px solid var(--border)',
+  const s: Record<string, React.CSSProperties> = {
+    sidebar: {
+      width: 160,
       flexShrink: 0,
+      background: '#0E1117',
+      borderRight: '1px solid rgba(201,168,76,0.15)',
       display: 'flex',
       flexDirection: 'column',
-    }}>
-      <div style={{ padding: '12px 14px 8px', borderBottom: '1px solid var(--border)' }}>
-        <span style={{ fontFamily: 'var(--font-mono)', fontSize: 10, color: 'var(--text-muted)', letterSpacing: '0.08em' }}>MARKETS</span>
-      </div>
+      overflowY: 'auto',
+    },
+    sectionLabel: {
+      fontSize: 9,
+      color: '#4A4844',
+      letterSpacing: '0.12em',
+      padding: '10px 12px 6px',
+      fontFamily: 'IBM Plex Mono, monospace',
+    },
+    item: (active: boolean): React.CSSProperties => ({
+      padding: '10px 12px',
+      cursor: 'pointer',
+      background: active ? '#161D26' : 'transparent',
+      borderLeft: active ? '2px solid #C9A84C' : '2px solid transparent',
+      transition: 'all 0.15s',
+    }),
+    assetName: (active: boolean): React.CSSProperties => ({
+      fontFamily: 'IBM Plex Mono, monospace',
+      fontSize: 12,
+      fontWeight: 500,
+      color: active ? '#C9A84C' : '#E8E4D9',
+      letterSpacing: '0.04em',
+    }),
+    fullName: {
+      fontSize: 10,
+      color: '#4A4844',
+      marginTop: 1,
+    },
+    priceRow: {
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      marginTop: 4,
+    },
+    price: {
+      fontFamily: 'IBM Plex Mono, monospace',
+      fontSize: 11,
+      color: '#8A8880',
+    },
+    divider: {
+      height: 1,
+      background: 'rgba(255,255,255,0.05)',
+      margin: '4px 12px',
+    },
+    oracleBox: {
+      margin: 10,
+      padding: '8px 10px',
+      background: '#131820',
+      border: '1px solid rgba(201,168,76,0.12)',
+      borderRadius: 3,
+      marginTop: 'auto',
+    },
+    oracleLabel: {
+      fontSize: 9,
+      color: '#4A4844',
+      fontFamily: 'IBM Plex Mono, monospace',
+      letterSpacing: '0.08em',
+    },
+    oracleVal: {
+      fontSize: 11,
+      color: '#2ECC8A',
+      fontFamily: 'IBM Plex Mono, monospace',
+      marginTop: 3,
+    },
+  };
 
-      {Object.values(ASSETS).map((asset) => {
-        const isSelected = asset.key === selected;
+  const fmt = (p: number) =>
+    p > 1000 ? '$' + p.toLocaleString() : p < 100 ? '$' + p.toFixed(2) : '$' + p.toFixed(2);
+
+  return (
+    <div style={s.sidebar}>
+      <div style={s.sectionLabel}>MARKETS</div>
+      {keys.map((k) => {
+        const a = ASSETS[k];
+        const active = k === selected;
+        const up = a.changePct >= 0;
         return (
-          <button
-            key={asset.key}
-            onClick={() => onSelect(asset.key)}
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              padding: '10px 14px',
-              background: isSelected ? 'rgba(201,168,76,0.08)' : 'transparent',
-              borderLeft: isSelected ? `2px solid ${asset.color}` : '2px solid transparent',
-              border: 'none',
-              borderRight: 'none',
-              borderTop: 'none',
-              borderBottom: '1px solid var(--border)',
-              cursor: 'pointer',
-              textAlign: 'left',
-              transition: 'background 0.15s',
-            }}
-          >
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 3 }}>
-              <span style={{ fontFamily: 'var(--font-mono)', fontSize: 12, fontWeight: 600, color: isSelected ? asset.color : 'var(--text-primary)' }}>
-                {asset.key}
-              </span>
-              <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: isSelected ? 'var(--text-primary)' : 'var(--text-secondary)' }}>
-                {formatPrice(asset.price)}
+          <div key={k} style={s.item(active)} onClick={() => onSelect(k)}>
+            <div style={s.assetName(active)}>{a.name}</div>
+            <div style={s.fullName}>{a.fullName}</div>
+            <div style={s.priceRow}>
+              <span style={s.price}>{fmt(a.price)}</span>
+              <span style={{ fontSize: 10, color: up ? '#2ECC8A' : '#E05252', fontFamily: 'IBM Plex Mono, monospace' }}>
+                {up ? '+' : ''}{a.changePct.toFixed(2)}%
               </span>
             </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>{asset.name}</span>
-              <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: asset.delta >= 0 ? 'var(--green)' : 'var(--red)' }}>
-                {asset.delta >= 0 ? '+' : ''}{asset.delta.toFixed(1)}%
-              </span>
-            </div>
-          </button>
+          </div>
         );
       })}
 
-      {/* Ndeipi rail indicator */}
-      <div style={{ marginTop: 'auto', padding: '12px 14px', borderTop: '1px solid var(--border)' }}>
-        <div style={{ fontSize: 10, color: 'var(--text-muted)', marginBottom: 6, letterSpacing: '0.06em' }}>ORACLE NETWORK</div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-          <div style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--green)' }} className="animate-pulse-gold" />
-          <span style={{ fontSize: 11, color: 'var(--text-secondary)' }}>Ndeipi rails live</span>
-        </div>
-        <div style={{ fontSize: 10, color: 'var(--text-muted)', marginTop: 4 }}>NodeBoss: 200 nodes</div>
-        <div style={{ fontSize: 10, color: 'var(--text-muted)' }}>Migodi-Auric: active</div>
+      <div style={s.divider} />
+      <div style={s.oracleBox}>
+        <div style={s.oracleLabel}>NODEBOSS ORACLE</div>
+        <div style={s.oracleVal}>200 nodes</div>
+        <div style={{ fontSize: 10, color: '#4A4844', marginTop: 2 }}>Zambia / Global</div>
       </div>
     </div>
   );

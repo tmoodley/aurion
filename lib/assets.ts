@@ -5,112 +5,97 @@ export interface Asset {
   name: string;
   fullName: string;
   price: number;
-  delta: number;
-  volume: string;
-  market: string;
-  color: string;
-  signal: 'ACCUMULATE' | 'STRONG ACCUMULATE' | 'MODERATE ACCUMULATE' | 'HOLD' | 'STRATEGIC';
-  signalColor: string;
-  aiRead: string;
-  unit: string;
+  change24h: number;
+  changePct: number;
+  high24h: number;
+  low24h: number;
+  volume24h: string;
+  signal: 'BUY' | 'SELL' | 'HOLD' | 'ACCUMULATE';
   chain: string;
-  history: number[];
+  aiRead: string;
+  color: string;
+  priceHistory: number[];
 }
 
 export const ASSETS: Record<AssetKey, Asset> = {
   BTC: {
     key: 'BTC',
-    name: 'Bitcoin',
+    name: 'BTC',
     fullName: 'Bitcoin',
-    price: 94210,
-    delta: 2.4,
-    volume: '$1.24B',
-    market: 'Global / All chains',
-    color: '#E8C97A',
-    signal: 'MODERATE ACCUMULATE',
-    signalColor: '#2ECC8A',
-    aiRead: 'Bitcoin consolidating above the $90K support band. Diaspora remittance flows into West Africa rose 14% this week. On-chain accumulation from African mobile wallets is accelerating. AURION oracle network detects elevated buying pressure from Lagos, Nairobi, and Lusaka corridors. Pair BTC exposure with Afro Gold Dollar for inflation-hedged settlement.',
-    unit: 'BTC',
-    chain: 'Bitcoin / Polygon bridge',
-    history: [88200, 89500, 91000, 90100, 92400, 93800, 94210, 93600, 94800, 95100, 94500, 94210],
+    price: 71200,
+    change24h: 840,
+    changePct: 1.19,
+    high24h: 72100,
+    low24h: 69800,
+    volume24h: '$38.2B',
+    signal: 'BUY',
+    chain: 'Bitcoin L1',
+    color: '#F7931A',
+    aiRead: 'BTC maintaining upward bias post-March rally. Strong momentum from $67K base. Genie AI 30-day model: 65% allocation. Watch $74,858 resistance — breakout targets $78K. Risk-on flows dominant.',
+    priceHistory: [67000,69500,70200,72100,74858,72500,70800,69200,68500,67100,66800,68200,69800,71200],
   },
   AGD: {
     key: 'AGD',
-    name: 'Afro Gold Dollar',
+    name: 'AGD',
     fullName: 'Afro Gold Dollar',
-    price: 61.40,
-    delta: 0.8,
-    volume: '$4.2M',
-    market: '1:1 Coop Coin peg',
+    price: 62.40,
+    change24h: 0.18,
+    changePct: 0.29,
+    high24h: 62.90,
+    low24h: 61.80,
+    volume24h: '$1.2M',
+    signal: 'ACCUMULATE',
+    chain: 'Polygon PoS',
     color: '#C9A84C',
-    signal: 'STRONG ACCUMULATE',
-    signalColor: '#2ECC8A',
-    aiRead: 'Afro Gold Dollar holds its 1:1 peg to the Coop Coin (10g ABSA-vaulted gold). Physical gold reserves in Ndola increased 3.2 tonnes this week from Migodi-Auric ASGM operations. NodeBoss telemetry confirms production certification. Ideal for diaspora savers seeking inflation protection and zero-friction remittance settlement into African corridors.',
-    unit: 'AGD',
-    chain: 'Polygon (NdeipiCoin rails)',
-    history: [60.8, 61.0, 61.1, 61.2, 61.1, 61.3, 61.4, 61.35, 61.4, 61.45, 61.4, 61.40],
+    aiRead: 'AGD tracking Coop Coin (10g gold) 1:1 peg. ABSA-backed. Gold in 30-day downtrend from $5,157 peak — current AGD discount relative to XAU provides accumulation window. Migodi-Auric reserves verified.',
+    priceHistory: [61.2,61.8,62.0,62.5,63.1,62.8,62.4,62.0,61.6,61.4,61.5,61.9,62.2,62.4],
   },
   COOP: {
     key: 'COOP',
-    name: 'Coop Coin',
-    fullName: 'Coop Coin (10g Gold)',
-    price: 61.40,
-    delta: 0.8,
-    volume: '$820K',
-    market: '10g ABSA Zambia vault',
+    name: 'COOP',
+    fullName: 'Coop Coin',
+    price: 62.40,
+    change24h: 0.20,
+    changePct: 0.32,
+    high24h: 62.95,
+    low24h: 61.70,
+    volume24h: '$480K',
+    signal: 'HOLD',
+    chain: 'Polygon PoS',
     color: '#2ECC8A',
-    signal: 'ACCUMULATE',
-    signalColor: '#2ECC8A',
-    aiRead: 'Coop Coin represents 10g of ABSA-vaulted Zambian gold, certified via Migodi-Auric Eastern Province operations and NodeBoss telemetry. Each coin carries a Proof of Production certificate on-chain. Fractional gold ownership without custody complexity -- ideal entry point for diaspora users moving from mobile money to real asset ownership.',
-    unit: 'coins',
-    chain: 'Polygon / ABSA custody',
-    history: [60.5, 60.7, 61.0, 60.9, 61.1, 61.2, 61.4, 61.3, 61.4, 61.45, 61.4, 61.40],
+    aiRead: 'Coop Coin (10g gold bar, ABSA-custodied). Physical delivery via Coop Pay Ltd trade floor network across Zambia cooperatives. Cletus directive: full ZAMACE commodity coverage before derivative issuance.',
+    priceHistory: [61.0,61.5,61.9,62.3,62.8,62.5,62.1,61.8,61.5,61.3,61.4,61.7,62.0,62.4],
   },
   NDX: {
     key: 'NDX',
-    name: 'NdeipiCoin',
-    fullName: 'NdeipiCoin (NDX)',
-    price: 4.28,
-    delta: 5.1,
-    volume: '$310K',
-    market: '21M hard cap',
+    name: 'NDX',
+    fullName: 'NdeipiCoin',
+    price: 10.00,
+    change24h: 0,
+    changePct: 0,
+    high24h: 10.00,
+    low24h: 10.00,
+    volume24h: 'Pre-launch',
+    signal: 'ACCUMULATE',
+    chain: 'Prospera ZEDE / Roatan',
     color: '#8B7ECC',
-    signal: 'STRATEGIC',
-    signalColor: '#8B7ECC',
-    aiRead: 'NdeipiCoin is the 21M hard-cap security token powering the Ndeipi ecosystem -- yield-bearing, production-backed, and owned by Ndeipi Foundation (Prospera ZEDE, Honduras). NDX sits at the convergence of energy, intelligence, and carbon demand across African infrastructure. Strategic position for diaspora investors seeking upside beyond spot gold. IPO conversion pathway active.',
-    unit: 'NDX',
-    chain: 'Polygon (Ndeipi Foundation)',
-    history: [3.80, 3.95, 4.10, 3.98, 4.05, 4.18, 4.28, 4.22, 4.30, 4.35, 4.28, 4.28],
+    aiRead: 'NdeipiCoin: 21M hard cap security token. THE SHARES of Ndeipi Foundation (Prospera ZEDE, Honduras). NSE prospectus: 1,000,000 NDX at $10/token. ROFR exercisable in NDX. Pre-launch accumulation phase.',
+    priceHistory: [10,10,10,10,10,10,10,10,10,10,10,10,10,10],
   },
   COPPER: {
     key: 'COPPER',
-    name: 'Coop Bar',
-    fullName: 'Coop Bar (1kg Copper)',
-    price: 9420,
-    delta: 1.1,
-    volume: '$1.8M',
-    market: '1kg ABSA copper bar',
-    color: '#E05252',
-    signal: 'MODERATE ACCUMULATE',
-    signalColor: '#E8C97A',
-    aiRead: 'Coop Bar is a 1kg copper bar certified through ABSA Zambia and Migodi-Auric Eastern Province operations. Copper demand from EV manufacturing and African grid infrastructure is accelerating globally. LME copper futures signal supply tightening. AURION detects institutional accumulation across the Zambia Copper Belt corridor. Moderate accumulate for base metal exposure tied to real production.',
-    unit: 'bars',
-    chain: 'Polygon / ABSA custody',
-    history: [9100, 9200, 9310, 9280, 9350, 9390, 9420, 9400, 9430, 9450, 9420, 9420],
+    name: 'COPPER',
+    fullName: 'Coop Bar (Copper)',
+    price: 9.20,
+    change24h: -0.12,
+    changePct: -1.29,
+    high24h: 9.45,
+    low24h: 9.10,
+    volume24h: '$210K',
+    signal: 'HOLD',
+    chain: 'Polygon PoS',
+    color: '#B87333',
+    aiRead: 'Coop Bar: 1kg copper bar, ABSA-custodied. Joint venture: Aurion Trading Ltd + Ndeipi Inc. Coop Derivatives pending ZAMACE coverage completion. Zambian copper belt production oracle via NodeBoss network.',
+    priceHistory: [9.5,9.4,9.35,9.42,9.48,9.41,9.30,9.22,9.15,9.10,9.12,9.18,9.22,9.20],
   },
 };
-
-export const PORTFOLIO = [
-  { asset: 'BTC', amount: 0.01318, value: 1242, allocation: 38, pnl: 12.4 },
-  { asset: 'AGD', amount: 14.0, value: 860, allocation: 26, pnl: 3.2 },
-  { asset: 'NDX', amount: 271.0, value: 1160, allocation: 36, pnl: 24.1 },
-];
-
-export const ONRAMPS = [
-  { id: 'mpesa', name: 'M-Pesa', desc: 'Kenya / Tanzania', icon: '📱', color: '#2ECC8A' },
-  { id: 'mtn', name: 'MTN Mobile', desc: 'Ghana / Uganda / SA', icon: '📡', color: '#E8C97A' },
-  { id: 'absa', name: 'ABSA Bank', desc: 'Zambia / South Africa', icon: '🏦', color: '#4A9ECC' },
-  { id: 'airtel', name: 'Airtel Money', desc: 'Zambia / Malawi', icon: '📶', color: '#E05252' },
-  { id: 'cowries', name: 'Cowries', desc: 'Nigeria corridor', icon: '🐚', color: '#C9A84C' },
-  { id: 'wire', name: 'SWIFT / Wire', desc: 'Diaspora global', icon: '🌍', color: '#8B7ECC' },
-];
