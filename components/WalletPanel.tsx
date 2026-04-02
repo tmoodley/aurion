@@ -1,120 +1,98 @@
 'use client';
 import { useState } from 'react';
-import { Wallet, ExternalLink } from 'lucide-react';
 
 const WALLETS = [
-  { id: 'metamask', name: 'MetaMask', chain: 'Polygon', icon: '🦊', status: 'available' },
-  { id: 'phantom', name: 'Phantom', chain: 'Solana', icon: '👻', status: 'available' },
-  { id: 'walletconnect', name: 'WalletConnect', chain: 'Multi-chain', icon: '🔗', status: 'available' },
-  { id: 'coinbase', name: 'Coinbase Wallet', chain: 'Polygon', icon: '🔵', status: 'available' },
+  { id: 'metamask', label: 'MetaMask', chain: 'Polygon PoS', color: '#F7931A' },
+  { id: 'phantom', label: 'Phantom', chain: 'Solana', color: '#8B7ECC' },
+  { id: 'walletconnect', label: 'WalletConnect', chain: 'Multi-chain', color: '#4A9ECC' },
+  { id: 'coinbase', label: 'Coinbase Wallet', chain: 'Polygon PoS', color: '#2ECC8A' },
 ];
 
 export default function WalletPanel() {
-  const [connected, setConnected] = useState<string | null>(null);
   const [connecting, setConnecting] = useState<string | null>(null);
+  const [connected, setConnected] = useState<string | null>(null);
 
   const connect = (id: string) => {
     setConnecting(id);
     setTimeout(() => {
-      setConnected(id);
       setConnecting(null);
-    }, 1200);
+      setConnected(id);
+    }, 1400);
   };
 
-  const activeWallet = WALLETS.find(w => w.id === connected);
+  const w = connected ? WALLETS.find(w => w.id === connected) : null;
 
   return (
-    <div style={{
-      background: 'var(--bg-card)',
-      border: '1px solid var(--border)',
-      borderRadius: 8,
-      padding: 16,
-      marginBottom: 12,
-    }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
-        <Wallet size={14} color="var(--text-muted)" />
-        <span style={{ fontFamily: 'var(--font-mono)', fontSize: 10, color: 'var(--text-muted)', letterSpacing: '0.08em' }}>WALLET</span>
-      </div>
-
-      {connected ? (
-        <div className="animate-slide-up">
-          <div style={{
-            padding: '10px 12px',
-            background: 'rgba(46,204,138,0.08)',
-            border: '1px solid rgba(46,204,138,0.25)',
-            borderRadius: 5,
-            marginBottom: 10,
-          }}>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                <span style={{ fontSize: 16 }}>{activeWallet?.icon}</span>
-                <div>
-                  <div style={{ fontSize: 12, color: 'var(--green)', fontWeight: 500 }}>{activeWallet?.name}</div>
-                  <div style={{ fontSize: 10, color: 'var(--text-muted)' }}>{activeWallet?.chain}</div>
-                </div>
-              </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                <div style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--green)' }} />
-                <span style={{ fontSize: 10, color: 'var(--green)' }}>Connected</span>
-              </div>
+    <div style={{ padding: 16 }}>
+      {connected && w ? (
+        <div>
+          <div style={{ fontSize: 9, color: '#4A4844', fontFamily: 'IBM Plex Mono, monospace', letterSpacing: '0.1em', marginBottom: 10 }}>
+            CONNECTED
+          </div>
+          <div style={{ padding: '12px', background: '#131820', borderRadius: 3, border: `1px solid ${w.color}44`, marginBottom: 12 }}>
+            <div style={{ fontSize: 12, color: w.color, fontFamily: 'IBM Plex Mono, monospace', marginBottom: 4 }}>{w.label}</div>
+            <div style={{ fontSize: 10, color: '#4A4844', marginBottom: 8 }}>{w.chain}</div>
+            <div style={{ fontSize: 11, color: '#8A8880', fontFamily: 'IBM Plex Mono, monospace', wordBreak: 'break-all' }}>
+              0x3f8a...7c2d
             </div>
           </div>
-          <div style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--text-muted)', wordBreak: 'break-all', marginBottom: 8 }}>
-            0x3f4a...8c2d
+          <div style={{ background: '#131820', borderRadius: 3, padding: '10px 12px', border: '1px solid rgba(255,255,255,0.05)' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 5 }}>
+              <span style={{ fontSize: 10, color: '#4A4844' }}>MATIC balance</span>
+              <span style={{ fontSize: 10, color: '#8A8880', fontFamily: 'IBM Plex Mono, monospace' }}>42.18 MATIC</span>
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <span style={{ fontSize: 10, color: '#4A4844' }}>AGD balance</span>
+              <span style={{ fontSize: 10, color: '#C9A84C', fontFamily: 'IBM Plex Mono, monospace' }}>145.50 AGD</span>
+            </div>
           </div>
-          <div style={{ display: 'flex', gap: 6 }}>
-            <button style={{
-              flex: 1, padding: '6px', background: 'var(--bg-tertiary)',
-              border: '1px solid var(--border)', borderRadius: 4,
-              color: 'var(--text-secondary)', fontSize: 11, cursor: 'pointer',
-              fontFamily: 'var(--font-mono)',
-            }}>
-              Copy address
-            </button>
-            <button
-              onClick={() => setConnected(null)}
-              style={{
-                flex: 1, padding: '6px', background: 'var(--bg-tertiary)',
-                border: '1px solid var(--border)', borderRadius: 4,
-                color: 'var(--red)', fontSize: 11, cursor: 'pointer',
-                fontFamily: 'var(--font-mono)',
-              }}
-            >
-              Disconnect
-            </button>
-          </div>
+          <button onClick={() => setConnected(null)} style={{
+            width: '100%',
+            marginTop: 10,
+            background: 'transparent',
+            border: '1px solid rgba(224,82,82,0.3)',
+            color: '#E05252',
+            fontFamily: 'IBM Plex Mono, monospace',
+            fontSize: 10,
+            padding: '7px',
+            borderRadius: 2,
+            cursor: 'pointer',
+            letterSpacing: '0.06em',
+          }}>DISCONNECT</button>
         </div>
       ) : (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-          {WALLETS.map(w => (
+        <>
+          <div style={{ fontSize: 9, color: '#4A4844', fontFamily: 'IBM Plex Mono, monospace', letterSpacing: '0.1em', marginBottom: 10 }}>
+            CONNECT WALLET
+          </div>
+          {WALLETS.map(wallet => (
             <button
-              key={w.id}
-              onClick={() => connect(w.id)}
+              key={wallet.id}
+              onClick={() => connect(wallet.id)}
               disabled={!!connecting}
               style={{
+                width: '100%',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'space-between',
-                padding: '8px 10px',
-                background: connecting === w.id ? 'rgba(201,168,76,0.08)' : 'var(--bg-tertiary)',
-                border: connecting === w.id ? '1px solid var(--border-bright)' : '1px solid var(--border)',
-                borderRadius: 5,
+                background: connecting === wallet.id ? `${wallet.color}14` : 'transparent',
+                border: `1px solid ${connecting === wallet.id ? wallet.color + '44' : 'rgba(255,255,255,0.07)'}`,
+                borderRadius: 3,
+                padding: '10px 12px',
                 cursor: 'pointer',
+                marginBottom: 6,
               }}
             >
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                <span style={{ fontSize: 16 }}>{w.icon}</span>
-                <div style={{ textAlign: 'left' }}>
-                  <div style={{ fontSize: 12, color: 'var(--text-primary)' }}>{w.name}</div>
-                  <div style={{ fontSize: 10, color: 'var(--text-muted)' }}>{w.chain}</div>
-                </div>
+              <div style={{ textAlign: 'left' }}>
+                <div style={{ fontSize: 12, color: '#E8E4D9', fontFamily: 'IBM Plex Mono, monospace' }}>{wallet.label}</div>
+                <div style={{ fontSize: 10, color: '#4A4844', marginTop: 1 }}>{wallet.chain}</div>
               </div>
-              <span style={{ fontSize: 11, color: connecting === w.id ? 'var(--gold)' : 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
-                {connecting === w.id ? 'Connecting...' : 'Connect →'}
+              <span style={{ fontSize: 10, color: connecting === wallet.id ? wallet.color : '#4A4844', fontFamily: 'IBM Plex Mono, monospace' }}>
+                {connecting === wallet.id ? 'Connecting...' : 'Connect'}
               </span>
             </button>
           ))}
-        </div>
+        </>
       )}
     </div>
   );
