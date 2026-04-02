@@ -27,17 +27,6 @@ export default function TradePanel({ asset }: { asset: Asset }) {
       outline: 'none',
       marginBottom: 10,
     },
-    quickBtn: (v: string): React.CSSProperties => ({
-      flex: 1,
-      background: amount === v ? 'rgba(201,168,76,0.1)' : 'transparent',
-      border: `1px solid ${amount === v ? 'rgba(201,168,76,0.4)' : 'rgba(255,255,255,0.07)'}`,
-      color: amount === v ? '#C9A84C' : '#4A4844',
-      fontFamily: 'IBM Plex Mono, monospace',
-      fontSize: 10,
-      padding: '5px 4px',
-      borderRadius: 2,
-      cursor: 'pointer',
-    }),
     row: { display: 'flex', justifyContent: 'space-between', marginBottom: 6 },
     rowLabel: { fontSize: 10, color: '#4A4844' },
     rowVal: { fontSize: 10, color: '#8A8880', fontFamily: 'IBM Plex Mono, monospace' },
@@ -50,7 +39,17 @@ export default function TradePanel({ asset }: { asset: Asset }) {
       <div style={{ fontSize: 11, color: '#4A4844', marginBottom: 16 }}>
         {side === 'buy' ? 'Buying' : 'Selling'} {fmtReceive(receive)} {asset.name}
       </div>
-      <button onClick={() => setDone(false)} style={{ ...s.quickBtn(''), flex: 'none', padding: '6px 16px', color: '#C9A84C', border: '1px solid rgba(201,168,76,0.4)' }}>
+      <button onClick={() => setDone(false)} style={{
+                                                  flex: 'none',
+                                                  padding: '6px 16px',
+                                                  background: 'transparent',
+                                                  border: '1px solid rgba(201,168,76,0.4)',
+                                                  color: '#C9A84C',
+                                                  fontFamily: 'IBM Plex Mono, monospace',
+                                                  fontSize: 10,
+                                                  borderRadius: 2,
+                                                  cursor: 'pointer',
+                                                }}>
         New order
       </button>
     </div>
@@ -89,10 +88,24 @@ export default function TradePanel({ asset }: { asset: Asset }) {
 
       <div style={{ display: 'flex', gap: 4, marginBottom: 14 }}>
         {['100', '500', '1000', '5000'].map(v => (
-          <button key={v} style={s.quickBtn(v)} onClick={() => setAmount(v)}>
-            ${v === '1000' ? '1K' : v === '5000' ? '5K' : v}
-          </button>
-        ))}
+            <button
+              key={v}
+              onClick={() => setAmount(v)}
+              style={{
+                flex: 1,
+                background: amount === v ? 'rgba(201,168,76,0.1)' : 'transparent',
+                border: `1px solid ${amount === v ? 'rgba(201,168,76,0.4)' : 'rgba(255,255,255,0.07)'}`,
+                color: amount === v ? '#C9A84C' : '#4A4844',
+                fontFamily: 'IBM Plex Mono, monospace',
+                fontSize: 10,
+                padding: '5px 4px',
+                borderRadius: 2,
+                cursor: 'pointer',
+              }}
+            >
+              ${v === '1000' ? '1K' : v === '5000' ? '5K' : v}
+            </button>
+          ))}
       </div>
 
       <div style={{ background: '#131820', borderRadius: 3, padding: '10px 12px', marginBottom: 12, border: '1px solid rgba(255,255,255,0.05)' }}>

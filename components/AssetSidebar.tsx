@@ -26,20 +26,6 @@ export default function AssetSidebar({ selected, onSelect }: Props) {
       padding: '10px 12px 6px',
       fontFamily: 'IBM Plex Mono, monospace',
     },
-    item: (active: boolean): React.CSSProperties => ({
-      padding: '10px 12px',
-      cursor: 'pointer',
-      background: active ? '#161D26' : 'transparent',
-      borderLeft: active ? '2px solid #C9A84C' : '2px solid transparent',
-      transition: 'all 0.15s',
-    }),
-    assetName: (active: boolean): React.CSSProperties => ({
-      fontFamily: 'IBM Plex Mono, monospace',
-      fontSize: 12,
-      fontWeight: 500,
-      color: active ? '#C9A84C' : '#E8E4D9',
-      letterSpacing: '0.04em',
-    }),
     fullName: {
       fontSize: 10,
       color: '#4A4844',
@@ -94,8 +80,26 @@ export default function AssetSidebar({ selected, onSelect }: Props) {
         const active = k === selected;
         const up = a.changePct >= 0;
         return (
-          <div key={k} style={s.item(active)} onClick={() => onSelect(k)}>
-            <div style={s.assetName(active)}>{a.name}</div>
+          <div
+            key={k}
+            onClick={() => onSelect(k)}
+            style={{
+              padding: '10px 12px',
+              cursor: 'pointer',
+              background: active ? '#161D26' : 'transparent',
+              borderLeft: active ? '2px solid #C9A84C' : '2px solid transparent',
+              transition: 'all 0.15s',
+            }}
+          >
+            <div style={{
+              fontFamily: 'IBM Plex Mono, monospace',
+              fontSize: 12,
+              fontWeight: 500,
+              color: active ? '#C9A84C' : '#E8E4D9',
+              letterSpacing: '0.04em',
+            }}>
+              {a.name}
+            </div>
             <div style={s.fullName}>{a.fullName}</div>
             <div style={s.priceRow}>
               <span style={s.price}>{fmt(a.price)}</span>

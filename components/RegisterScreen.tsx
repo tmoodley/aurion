@@ -20,7 +20,15 @@ export default function RegisterScreen({ onSwitchToLogin }: Props) {
     if (pass !== confirm) { setError('Passwords do not match.'); return; }
     if (pass.length < 6) { setError('Password must be at least 6 characters.'); return; }
     setLoading(true); setError('');
-    await register(name, email, pass);
+    await register({
+      firstName: name.split(' ')[0],
+      lastName: name.split(' ').slice(1).join(' ') || '',
+      email,
+      password: pass,
+      country: '',
+      phone: '',
+      corridor: '',
+    });
   };
 
   const inp: React.CSSProperties = {
