@@ -17,6 +17,15 @@ export interface Asset {
   priceHistory: number[];
 }
 
+export const ONRAMPS = [
+  { id: 'mpesa',  label: 'M-Pesa',       region: 'Kenya / TZ',  color: '#2ECC8A' },
+  { id: 'mtn',    label: 'MTN MoMo',     region: 'Ghana / UG',  color: '#F7931A' },
+  { id: 'absa',   label: 'ABSA Bank',    region: 'Zambia / SA', color: '#E05252' },
+  { id: 'cowries',label: 'Cowries',      region: 'Nigeria',     color: '#C9A84C' },
+  { id: 'airtel', label: 'Airtel Money', region: 'ZM / MW',     color: '#E05252' },
+  { id: 'swift',  label: 'SWIFT / Wire', region: 'Global',      color: '#4A9ECC' },
+];
+
 export const ASSETS: Record<AssetKey, Asset> = {
   BTC: {
     key: 'BTC',
