@@ -7,6 +7,8 @@ export interface User {
   lastName: string;
   email: string;
   phone: string;
+  country: string;
+  corridor: string;
   role: string;
   avatar: string;
   kycStatus: 'verified' | 'pending' | 'unverified';
@@ -35,6 +37,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       lastName: 'Moodley',
       email,
       phone: '+1 647 000 0000',
+      country: 'Canada',
+      corridor: 'CA → ZM',
       role: 'Founder & CEO — Ndeipi Inc.',
       avatar: 'TM',
       kycStatus: 'verified',
@@ -50,6 +54,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       lastName: name.split(' ').slice(1).join(' '),
       email,
       phone: '',
+      country: '',
+      corridor: '',
       role: 'AURION Trader',
       avatar: name.slice(0, 2).toUpperCase(),
       kycStatus: 'pending',
