@@ -40,7 +40,7 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 export default function PortfolioPage() {
   const router = useRouter();
   const [period, setPeriod] = useState('1M');
-  const totalValue = PORTFOLIO.reduce((s, p) => s + p.value, 0);
+  const totalValue = PORTFOLIO.reduce((s, p) => s + p.amount * ASSETS[p.key].price, 0);
   const totalPnl = 342;
   const totalPnlPct = 11.7;
 
