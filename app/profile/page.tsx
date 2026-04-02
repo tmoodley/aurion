@@ -4,7 +4,13 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/auth';
 import Topbar from '@/components/Topbar';
 import { User, Shield, Wallet, Bell, LogOut, ChevronRight, TrendingUp, Edit2, Check } from 'lucide-react';
+import { ASSETS, PORTFOLIO } from '@/lib/assets';
 
+// inside the component, after the if (!user) block:
+const portfolioValue = PORTFOLIO.reduce((s, p) => s + p.amount * ASSETS[p.key].price, 0);
+const portfolioCost  = PORTFOLIO.reduce((s, p) => s + p.amount * p.avgBuy, 0);
+const totalPnl       = portfolioValue - portfolioCost;
+const totalPnlPct    = ((totalPnl / portfolioCost) * 100).toFixed(1);
 type Tab = 'overview' | 'security' | 'wallet' | 'notifications';
 
 const BADGE = {
@@ -98,16 +104,16 @@ export default function ProfilePage() {
             <div style={{ textAlign: 'right' }}>
               <div style={{ fontSize: 11, color: 'var(--text-muted)', fontFamily: 'var(--font-mono)', marginBottom: 2 }}>PORTFOLIO</div>
               <div style={{ fontFamily: 'var(--font-mono)', fontSize: 20, fontWeight: 600, color: 'var(--gold)' }}>
-                ${user.portfolioValue.toLocaleString()}
+                ${portfolioValue.toLocaleString('en', { maximumFractionDigits: 0 })}
               </div>
             </div>
-            {user.totalPnl > 0 && (
+            {totalPnl > 0 && (
               <div style={{ textAlign: 'right' }}>
                 <div style={{ fontSize: 11, color: 'var(--text-muted)', fontFamily: 'var(--font-mono)', marginBottom: 2 }}>P&L</div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
                   <TrendingUp size={14} color="var(--green)" />
                   <span style={{ fontFamily: 'var(--font-mono)', fontSize: 16, color: 'var(--green)' }}>
-                    +${user.totalPnl} ({user.totalPnlPct}%)
+                    +${totalPnl.toLocaleString('en', { maximumFractionDigits: 0 })} ({totalPnlPct}%)
                   </span>
                 </div>
               </div>
