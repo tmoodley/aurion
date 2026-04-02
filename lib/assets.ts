@@ -18,12 +18,12 @@ export interface Asset {
 }
 
 export const ONRAMPS = [
-  { id: 'mpesa',  label: 'M-Pesa',       region: 'Kenya / TZ',  color: '#2ECC8A' },
-  { id: 'mtn',    label: 'MTN MoMo',     region: 'Ghana / UG',  color: '#F7931A' },
-  { id: 'absa',   label: 'ABSA Bank',    region: 'Zambia / SA', color: '#E05252' },
-  { id: 'cowries',label: 'Cowries',      region: 'Nigeria',     color: '#C9A84C' },
-  { id: 'airtel', label: 'Airtel Money', region: 'ZM / MW',     color: '#E05252' },
-  { id: 'swift',  label: 'SWIFT / Wire', region: 'Global',      color: '#4A9ECC' },
+  { id: 'mpesa',   label: 'M-Pesa',       name: 'M-Pesa',       region: 'Kenya / TZ',  color: '#2ECC8A', icon: '📱', desc: 'Mobile money — Kenya, Tanzania' },
+  { id: 'mtn',     label: 'MTN MoMo',     name: 'MTN MoMo',     region: 'Ghana / UG',  color: '#F7931A', icon: '📶', desc: 'Mobile money — Ghana, Uganda' },
+  { id: 'absa',    label: 'ABSA Bank',    name: 'ABSA Bank',    region: 'Zambia / SA', color: '#E05252', icon: '🏦', desc: 'Bank transfer — Zambia, South Africa' },
+  { id: 'cowries', label: 'Cowries',      name: 'Cowries',      region: 'Nigeria',     color: '#C9A84C', icon: '🐚', desc: 'Digital wallet — Nigeria' },
+  { id: 'airtel',  label: 'Airtel Money', name: 'Airtel Money', region: 'ZM / MW',     color: '#E05252', icon: '📡', desc: 'Mobile money — Zambia, Malawi' },
+  { id: 'swift',   label: 'SWIFT / Wire', name: 'SWIFT / Wire', region: 'Global',      color: '#4A9ECC', icon: '🌐', desc: 'Bank wire — global diaspora corridors' },
 ];
 
 export const ASSETS: Record<AssetKey, Asset> = {
