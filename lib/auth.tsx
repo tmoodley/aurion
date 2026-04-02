@@ -13,6 +13,9 @@ export interface User {
   role: string;
   avatar: string;
   kycStatus: 'verified' | 'pending' | 'unverified';
+  joinedAt: string;
+  walletAddress: string;
+  preferredOnramp: string;
 }
 
 interface AuthCtx {
@@ -44,6 +47,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       role: 'Founder & CEO — Ndeipi Inc.',
       avatar: 'TM',
       kycStatus: 'verified',
+      joinedAt: 'Jan 2025',
+      walletAddress: '0x3f8a...7c2d',
+      preferredOnramp: 'absa',
     });
     return true;
   };
@@ -54,7 +60,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       id: 'NDX-' + Date.now(),
       name,
       firstName: name.split(' ')[0],
-      lastName: name.split(' ').slice(1).join(' '),
+      lastName: name.split(' ').slice(1).join(' ') || '',
       email,
       phone: '',
       country: '',
@@ -62,6 +68,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       role: 'AURION Trader',
       avatar: name.slice(0, 2).toUpperCase(),
       kycStatus: 'pending',
+      joinedAt: new Date().toLocaleDateString('en', { month: 'short', year: 'numeric' }),
+      walletAddress: '',
+      preferredOnramp: '',
     });
     return true;
   };
