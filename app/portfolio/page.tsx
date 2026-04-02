@@ -118,8 +118,8 @@ export default function PortfolioPage() {
             {/* Visual allocation bar */}
             <div style={{ display: 'flex', height: 8, borderRadius: 4, overflow: 'hidden', marginBottom: 16 }}>
               {PORTFOLIO.map(p => {
-                const asset = ASSETS[p.asset as keyof typeof ASSETS];
-                return <div key={p.asset} style={{ flex: p.allocation, background: asset?.color }} />;
+                const asset = ASSETS[p.key];
+                return <div key={p.key} style={{ flex: p.alloc, background: asset?.color }} />;
               })}
             </div>
             {PORTFOLIO.map(p => {
