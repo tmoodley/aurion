@@ -26,6 +26,27 @@ export const ONRAMPS = [
   { id: 'swift',   label: 'SWIFT / Wire', name: 'SWIFT / Wire', region: 'Global',      color: '#4A9ECC', icon: '🌐', desc: 'Bank wire — global diaspora corridors' },
 ];
 
+export const PORTFOLIO = [
+  {
+    key: 'BTC' as AssetKey,
+    amount: 0.412,
+    avgBuy: 65000,
+    alloc: 65,
+  },
+  {
+    key: 'AGD' as AssetKey,
+    amount: 145.5,
+    avgBuy: 60.20,
+    alloc: 21,
+  },
+  {
+    key: 'NDX' as AssetKey,
+    amount: 500,
+    avgBuy: 10.00,
+    alloc: 14,
+  },
+];
+
 export const ASSETS: Record<AssetKey, Asset> = {
   BTC: {
     key: 'BTC',
