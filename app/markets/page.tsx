@@ -138,9 +138,9 @@ export default function MarketsPage() {
                   <div style={{ fontFamily: 'var(--font-mono)', fontSize: 13, color: 'var(--text-primary)' }}>
                     {formatPrice(asset.price)}
                   </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 4, color: asset.delta >= 0 ? 'var(--green)' : 'var(--red)', fontFamily: 'var(--font-mono)', fontSize: 12 }}>
-                    {asset.delta >= 0 ? <TrendingUp size={11} /> : <TrendingDown size={11} />}
-                    {asset.delta >= 0 ? '+' : ''}{asset.delta.toFixed(1)}%
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 4, color: asset.changePct >= 0 ? 'var(--green)' : 'var(--red)', fontFamily: 'var(--font-mono)', fontSize: 12 }}>
+                    {asset.changePct  >= 0 ? <TrendingUp size={11} /> : <TrendingDown size={11} />}
+                    {asset.changePct  >= 0 ? '+' : ''}{asset.changePct .toFixed(1)}%
                   </div>
                   <div style={{ fontFamily: 'var(--font-mono)', fontSize: 12, color: 'var(--text-secondary)' }}>{asset.volume}</div>
                   <div>
